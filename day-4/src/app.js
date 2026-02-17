@@ -1,40 +1,40 @@
 const express = require("express")
 const app = express()
-
-
 app.use(express.json())
-let notes = [
- 
-]
-
-
-
-app.post("/notes", (req, res) => {
-    console.log(req.body);
-    notes.push(req.body)
-
-    res.send("note created!✅")
-
-})
-
+let notes = []
 
 app.get("/notes", (req, res) => {
-    res.send(notes)
+    res.status(200).json({
+        notes: notes
+    })
 })
 
-app.delete("/notes/:index", (req, res) => {
-
-    delete notes[req.params.index - 1]
-    res.send("note deleted ❎")
+app.post("/notes", (req, res) => {
+    notes.push(req.body)
+    res.status(201).json({
+        massage: "Note insert Successfuly"
+    })
 })
 
-app.patch("/notes/:index", (req, res) => {
-    notes[req.params.index - 1].dec = req.body.dec
+app.delete("/notes/:idx", (req, res) => {
+    let index = req.params.idx-1
 
-    res.send("Note is Updated ✅")
+    delete notes[index]
+
+    res.status(201).json({
+        massage: "Note Delete Successfuly"
+    })
 })
 
+app.patch("/notes/:idx", (req, res) => {
+    let index = req.params.idx-1
 
+    notes[index].decription = req.body.decription 
+
+    res.status(201).json({
+        massage: "Note Updated Successfuly"
+    })
+})
 
 
 
