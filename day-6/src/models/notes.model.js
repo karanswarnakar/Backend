@@ -8,3 +8,5 @@ const notesSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 const NotesModel = mongoose.model("notes", notesSchema)
+
+module.exports = NotesModel

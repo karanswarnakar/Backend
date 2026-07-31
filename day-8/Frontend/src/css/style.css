@@ -1,0 +1,58 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+.notes {
+  display: flex;
+  margin: 1rem;
+  flex-wrap: wrap;
+  transition: all 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.notes .note {
+  height: -moz-fit-content;
+  height: fit-content;
+  max-width: 25rem;
+  margin: 0.45rem;
+  padding: 1.5rem 1.25rem;
+  border-radius: 0.45rem;
+  gap: 1rem;
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  box-shadow: 2px 4px 5px 0px rgba(0, 0, 0, 0.0862745098);
+  border: 1px solid rgba(7, 126, 231, 0.6078431373);
+  cursor: pointer;
+  transition: all 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.notes .note:active {
+  transform: scale(0.99);
+}
+.notes .note:active img {
+  transform: scale(1.1);
+}
+.notes .note img {
+  border-radius: 0.45rem;
+  border: 1px solid rgba(7, 126, 231, 0.6078431373);
+  filter: drop-shadow(5px 5px 1px rgba(7, 126, 231, 0.6078431373));
+  height: 3rem;
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.notes .note .title {
+  font-size: 22px;
+  margin-bottom: 0.35rem;
+}
+.notes .note .decription {
+  font-size: 16px;
+  opacity: 60%;
+}/*# sourceMappingURL=style.css.map */

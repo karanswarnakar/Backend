@@ -1,0 +1,114 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+}
+
+.notes {
+  display: flex;
+  margin: 1rem;
+}
+.notes .note {
+  margin: 0.45rem;
+  max-width: 25rem;
+  padding: 1.5rem 1.25rem;
+  border-radius: 0.45rem;
+  gap: 1rem;
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  box-shadow: 2px 4px 5px 0px rgba(0, 0, 0, 0.0862745098);
+  border: 1px solid rgba(7, 126, 231, 0.6078431373);
+  cursor: pointer;
+  transition: all 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.notes .note:active {
+  transform: scale(0.99);
+}
+.notes .note:active img {
+  transform: scale(1.1);
+}
+.notes .note img {
+  border-radius: 0.45rem;
+  border: 1px solid rgba(7, 126, 231, 0.6078431373);
+  filter: drop-shadow(5px 5px 1px rgba(7, 126, 231, 0.6078431373));
+  height: 3rem;
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.notes .note .title {
+  font-size: 22px;
+  margin-bottom: 0.35rem;
+}
+.notes .note .decription {
+  font-size: 16px;
+  opacity: 60%;
+}
+
+.add {
+  position: absolute;
+  right: 3rem;
+  bottom: 3rem;
+  z-index: 99;
+}
+.add:active img {
+  transform: scale(1.1);
+}
+.add img {
+  height: 4rem;
+  background-color: #fff;
+  box-shadow: 2px 4px 5px 0px rgba(0, 0, 0, 0.0862745098);
+  border: 3px solid rgba(7, 126, 231, 0.6078431373);
+  cursor: pointer;
+  transition: all 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 20rem;
+}
+
+.modal {
+  height: 100vh;
+  width: 100%;
+  background-color: #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 199;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.modal .massage-box {
+  display: flex;
+  flex-flow: column;
+  gap: 0.55rem;
+  background-color: rgba(0, 0, 0, 0.2509803922);
+  padding: 0.55rem;
+  border-radius: 0.25rem;
+}
+.modal .massage-box input {
+  font-size: 22px;
+  height: 3.5rem;
+  width: 100%;
+  padding: 1rem 0.85rem;
+  border: none;
+  outline: none;
+  border-radius: 0.25rem;
+}
+.modal .massage-box textarea {
+  font-size: 20px;
+  padding: 1rem 0.85rem;
+  border: none;
+  outline: none;
+  border-radius: 0.25rem;
+}/*# sourceMappingURL=style.css.map */
