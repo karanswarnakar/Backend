@@ -14,6 +14,7 @@ This repository is my personal programming knowledge base. It contains my daily 
 - [Day 6](#day-6)
 - [Day 7](#day-7)
 - [Day 8](#day-8)
+- [Day 9](#day-9)
 - [Day 10](#day-10)
 
 ---
@@ -146,6 +147,17 @@ Main topic: Frontend + full CRUD flow.
 
 ---
 
+## Day 9
+
+Main topic: Review of previous backend and frontend concepts.
+
+| Topic | Subtopic | Link |
+|------|------|------|
+| Review | Covered in previous days | [day-9.md](../day-9/day-9.md) |
+| Review | Backend and frontend recap | [day-9.md](../day-9/day-9.md) |
+
+---
+
 ## Day 10
 
 Main topic: Routes, authentication, JWT, and cookies.
@@ -190,6 +202,7 @@ Main topic: Routes, authentication, JWT, and cookies.
 
 ## R
 
+- Review → [Day 9](#day-9)
 - Routes → [Day 10](#day-10)
 - React → [Day 8](#day-8)
 
@@ -233,9 +246,9 @@ Frontend + Full App Flow
 
 # 📊 Learning Statistics
 
-- Days Completed: 9
-- Notes Files: 9
-- Main Topics: 9
+- Days Completed: 10
+- Notes Files: 10
+- Main Topics: 10
 - Subtopics: 40+
 - Code Examples: 20+
 - Diagrams: 0
