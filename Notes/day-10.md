@@ -250,8 +250,8 @@ This allows the browser to remember the user session.
 
 ## 🧩 Syntax
 ```js
-app.use(cookieParser());
-res.cookie('jwt_token', token);
+app.use(cookieParser()); - inside // [app.js]
+res.cookie('jwt_token', token); // [/routers/auth.router.js]
 ```
 
 ## 🔍 Code Breakdown
