@@ -16,6 +16,7 @@ This repository is my personal programming knowledge base. It contains my daily 
 - [Day 8](#day-8)
 - [Day 9](#day-9)
 - [Day 10](#day-10)
+- [Day 11](#day-11)
 
 ---
 
@@ -172,24 +173,49 @@ Main topic: Routes, authentication, JWT, and cookies.
 
 ---
 
+## Day 11
+
+Main topic: Authentication flow with Express, JWT, cookies, routers, models, controllers, and hashing.
+
+| Topic | Subtopic | Link |
+|------|------|------|
+| Authentication | Authentication Flow | [day-11.md](day-11.md#authentication-flow) |
+| Controllers | Controllers and Callback Functions | [day-11.md](day-11.md#controllers-and-callback-functions) |
+| Hashing | Hashing with MD5 and Crypto | [day-11.md](day-11.md#hashing-with-md5-and-crypto) |
+| JWT | JWT | [day-11.md](day-11.md#jwt) |
+| Cookies | Cookies and cookie-parser | [day-11.md](day-11.md#cookies-and-cookie-parser) |
+| Router | Express Router and User Model | [day-11.md](day-11.md#express-router-and-user-model) |
+| Config | Environment Variables and Database Connection | [day-11.md](day-11.md#environment-variables-and-database-connection) |
+
+---
+
 # 🔎 Quick Search
 
 ## A
 
-- Authentication → [Day 10](#day-10)
+- Authentication → [Day 10](#day-10), [Day 11](#day-11)
 
 ## C
 
 - CRUD → [Day 4](#day-4), [Day 7](#day-7)
-- Cookies → [Day 10](#day-10)
+- Controllers → [Day 11](#day-11)
+- Cookies → [Day 10](#day-10), [Day 11](#day-11)
 
 ## E
 
-- Express → [Day 2](#day-2), [Day 5](#day-5)
+- Express → [Day 2](#day-2), [Day 5](#day-5), [Day 11](#day-11)
+
+## H
+
+- Hashing → [Day 11](#day-11)
 
 ## J
 
-- JWT → [Day 10](#day-10)
+- JWT → [Day 10](#day-10), [Day 11](#day-11)
+
+## L
+
+- Login → [Day 11](#day-11)
 
 ## M
 
@@ -203,7 +229,7 @@ Main topic: Routes, authentication, JWT, and cookies.
 ## R
 
 - Review → [Day 9](#day-9)
-- Routes → [Day 10](#day-10)
+- Routes → [Day 10](#day-10), [Day 11](#day-11)
 - React → [Day 8](#day-8)
 
 ---
