@@ -92,6 +92,7 @@ Authentication means checking who the user is.
 
 When a user sends a request, the server should know if that request is coming from a real user or an unknown person.
 
+![reqOfUserHowToIdentifyWhoIsReq](./image/day-10-img/reqOfUserHowToIdentifyWhoIsReq.png)
 ## 🌍 Real World Example
 Imagine entering a school building.
 
@@ -183,6 +184,7 @@ This helps the server know:
 - who the user is
 - which account the request belongs to
 
+![registerTokenDistrubution](./image/day-10-img/da-10-registerTokenDistrubution.png)
 ## 🧩 Syntax
 ```js
 const token = jwt.sign(payload, secretKey);
