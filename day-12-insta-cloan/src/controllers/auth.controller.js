@@ -1,25 +1,24 @@
 const UserModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 
 
 const authRegister = async (req, res) => {
 
     const { username, email, password, bio, profileImage } = req.body
 
-    const isUserExists = UserModel.findOne({
+    const isUserExists = await UserModel.findOne({
         $or: [
             { email },
             { username }
         ]
     })
-
-    if (!isUserExists) {
+    if (isUserExists) {
         return res.status(409).json({
-            massage: `User exists with this ${isUserExists.email ? "email account" : "username"} `
+            massage: `User exists with this ${isUserExists.email ? "email account" : "username"}`
         })
     }
-    const hash = crypto.createHash("MD5").update(password).digest("hex")
+    const hash = await bcrypt.hash(password, 10)
     const user = await UserModel.create({
         username, email, password: hash, bio, profileImage
     })
@@ -56,10 +55,8 @@ const authLogin = async (req, res) => {
             massage: `User not register with this ${user.email ? "email" : "username"} `
         })
     }
-    
-    const hash = crypto.createHash("MD5").update(password).digest("hex")
-    
-    const isPasswordMatch = (hash == user.password)
+   
+    const isPasswordMatch = await bcrypt.compare(password,user.password)
     
     if(!isPasswordMatch){
         return res.status(401).json({

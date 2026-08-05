@@ -13,3 +13,15 @@
 ==> users
     => followers
     => following
+
+
+POST API: (multer + READ Doc && ImageKit + READ Doc)
+==> post (is not "rew" it is in "from-data")
+    => create
+    {
+        caption: String,
+        image_url: String,
+        userId: user who created it,
+        createdAt
+    }
+&& imageKit image uplode 

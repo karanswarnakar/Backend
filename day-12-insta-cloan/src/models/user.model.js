@@ -22,11 +22,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "https://ik.imagekit.io/icuoatuu2/default.avif"
     }
-
 }, {
     timestamps: true,
 });
 
-const UserModel = mongoose.model('user', userSchema);
+const UserModel = mongoose.model('User', userSchema);
 
 module.exports = UserModel;
