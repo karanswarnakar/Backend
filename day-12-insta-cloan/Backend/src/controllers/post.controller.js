@@ -1,4 +1,5 @@
 const PostModel = require('../models/post.model');
+const LikeModel = require('../models/like.model');
 const ImageKit = require('@imagekit/nodejs');
 const { toFile } = require('@imagekit/nodejs');
 
@@ -75,8 +76,45 @@ async function getPostDetailsById(req, res) {
         post
     })
 }
+
+/** * 
+ * @route GET - /api/posts/like/:postId [protected]
+ * @description Like a post by postId and check if the user has already liked the post 
+ */
+
+async function likeByPostId(req, res) {
+    const postId = req.params.postId
+    const username = req.user.username
+
+    const post = await PostModel.findById({_id: postId})
+
+    if(!post){
+        return res.status(404).json({
+            message: "Post not found"
+        })
+    }
+
+    let like;
+    try{
+        like = await LikeModel.create({
+        post: post._id,
+        user: username
+    })
+    }catch(err){
+        res.status(400).json({
+            message: `Post already like by ${username}`
+        })
+    }
+
+    res.status(201).json({
+        message: "Post liked successfully",
+        like
+    })
+}
+
 module.exports = {
     createPost,
     getPostOfUser,
-    getPostDetailsById
+    getPostDetailsById,
+    likeByPostId
 }

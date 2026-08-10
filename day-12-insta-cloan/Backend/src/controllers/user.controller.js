@@ -94,7 +94,6 @@ async function unfollowUser(req, res) {
 @route PATCH - /api/users/update/status/accepted/:username
 @description update status ["accepted"] 
  */
-
 async function acceptFollowerRequest(req, res) {
 
 
@@ -102,7 +101,6 @@ async function acceptFollowerRequest(req, res) {
     const user = req.user.username // B
 
     const follow = await FollowModel.findOne({ follower: follower, followee: user })
-    console.log(follow);
 
     if (!follow) {
         return res.status(400).json({
@@ -169,7 +167,6 @@ async function rejectFollowerRequest(req, res) {
 /** * 
 @route GET - /api/users/status/pending/:username
 @description getting all pending status user ["pending"] 
-
 */
 async function userPendingFollower(req, res) {
     const followee = req.params.username // a
@@ -194,11 +191,12 @@ async function userPendingFollower(req, res) {
         pendingList
     })
 }
+
+
 module.exports = {
     followUser,
     unfollowUser,
     acceptFollowerRequest,
     rejectFollowerRequest,
     userPendingFollower
-
 }
