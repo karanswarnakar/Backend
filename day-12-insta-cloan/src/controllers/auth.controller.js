@@ -1,36 +1,42 @@
 const UserModel = require('../models/user.model');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+/**  
+* @route POST - api/auth/register 
+* @description  Register a new user save user to database and create a token and save in cookie
+ */
+async function register(req, res) {
+    const { username, email, password, profileImage } = req.body;
 
-
-const authRegister = async (req, res) => {
-
-    const { username, email, password, bio, profileImage } = req.body
-
-    const isUserExists = await UserModel.findOne({
+    const isUserExist = await UserModel.findOne({
         $or: [
-            { email },
-            { username }
+            { username },
+            { email }
         ]
     })
-    if (isUserExists) {
+
+    if (isUserExist) {
         return res.status(409).json({
-            massage: `User exists with this ${isUserExists.email ? "email account" : "username"}`
+            message: `User already exists with username or email`
         })
     }
-    const hash = await bcrypt.hash(password, 10)
+    const hash = await bcrypt.hash(password, 10);
     const user = await UserModel.create({
-        username, email, password: hash, bio, profileImage
+        username,
+        email,
+        password: hash,
+        profileImage
     })
 
     const token = jwt.sign({
-        id: user._id
-    }, process.env.JWT_SECRET, { expiresIn: "1d" })
+        id: user._id,
+        username: user.username
+    }, process.env.JWT_SECRET)
 
     res.cookie("token", token)
 
-    res.status(201).json({
-        massage: "User register successfuly",
+    return res.status(201).json({
+        message: 'User created successfully',
         user: {
             username: user.username,
             email: user.email
@@ -39,48 +45,45 @@ const authRegister = async (req, res) => {
 
 }
 
-const authLogin = async (req, res) => {
+
+/**  
+* @route POST - api/auth/login 
+* @description  login a user and create a token and save in cookie and return user data
+* @function {username, email} any of this can use for login user
+ */
+async function login(req, res) {
     const { username, email, password } = req.body
 
-    
     const user = await UserModel.findOne({
         $or: [
             { username },
             { email }
         ]
     })
-    
+
     if (!user) {
         return res.status(404).json({
-            massage: `User not register with this ${user.email ? "email" : "username"} `
-        })
-    }
-   
-    const isPasswordMatch = await bcrypt.compare(password,user.password)
-    
-    if(!isPasswordMatch){
-        return res.status(401).json({
-            massage: "Invalid password"
+            message: `User dose not exists with ${user.email ? "email" : "username"}`
         })
     }
 
     const token = jwt.sign({
-        id: user._id
-    }, process.env.JWT_SECRET, {expiresIn: "1d"})
+        id: user._id,
+        username: user.username
+    }, process.env.JWT_SECRET)
 
-    res.cookie("token", token)
+    res.cookie("token",token)
 
     res.status(200).json({
-        massage: "User login successfuly",
-        user:{
+        message: "User login successfully",
+        user: {
             username: user.username,
-            email: user.email,
+            email: user.email
         }
     })
 }
 
-
 module.exports = {
-    authRegister,
-    authLogin
+    register,
+    login
 }

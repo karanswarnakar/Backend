@@ -3,24 +3,21 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
-        required: [true, "User is required"],
-        unique: [true, "User already exists"]
+        required: true,
+        unique: true
     },
     email: {
         type: String,
-        required: [true, "Email is required"],
-        unique: [true, "Email already exists"]
+        required: true,
+        unique: true,
     },
     password: {
         type: String,
-        required: [true, "password is required"]
+        required: true,
     },
-    bio: {
-        type: String
-    },
-    profile_image: {
+    profileImage: {
         type: String,
-        default: "https://ik.imagekit.io/icuoatuu2/default.avif"
+        default: "https://ik.imagekit.io/a2vhcigch/default-dp.png"
     }
 }, {
     timestamps: true,

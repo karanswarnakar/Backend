@@ -1,145 +1,82 @@
-const PostModel = require('../models/post.models.js');
+const PostModel = require('../models/post.model');
 const ImageKit = require('@imagekit/nodejs');
 const { toFile } = require('@imagekit/nodejs');
-const jwt = require('jsonwebtoken')
 
-const imagekit = new ImageKit({
-    privateKey: process.env.IMAGE_KIT_PRIVATE_KEY
+const client = new ImageKit({
+    privateKay: process.env.IMAGEKIT_PRIVATE_KEY
 })
+/** 
+ * @route POST - /api/posts [protected]
+ */
+async function createPost(req, res) {
+    const userId = req.user.id
 
-
-
-const createPostController = async (req, res) => {
-    /** *
-     * {caption, imageUrl} = req.body
-     * caption <- json 
-     * image = dose not work with raw format {require: form-data}
-     * need multer middleware  
-     */
-
-    const token = req.cookies.token
-
-    if (!token) {
-        return res.status(401).json({
-            massage: "Token is not authorized"
-        })
-    }
-
-
-    let decode = null;
-
-    try {
-        decode = jwt.verify(token, process.env.JWT_SECRET)
-    } catch (err) {
-        return res.status(401).json({
-            massage: "User is not authorized"
-        })
-    }
-
-
-    const file = await imagekit.files.upload({
-        file: await toFile(Buffer.from(req.file.buffer), 'file'),
+    const file = await client.files.upload({
+        file: await toFile(Buffer.from(req.file.buffer), "file"),
         fileName: "postImage",
-        folder: "Instagram-Cloan/post"
+        folder: "Instagram-clone/post"
     })
 
 
     const post = await PostModel.create({
         caption: req.body.caption,
-        postImage: file.url,
-        userId: decode.id
+        user: userId,
+        postImage: file.url
     })
 
     res.status(201).json({
-        massage: "Post created successfully",
+        message: "Post created successfully",
         post
     })
-
 }
-const getAllPostsController = async (req, res) => {
+/** 
+ * @route GET - /api/posts [protected]
+ */
+async function getPostOfUser(req, res) {
 
-    const token = req.cookies.token
+    const userId = req.user.id
 
-    if (!token) {
-        return res.status(401).json({
-            massage: "Token is not authorized"
-        })
-    }
+    const post = await PostModel.find({ user: userId })
 
-    let decode;
-
-    try {
-        decode = jwt.verify(token, process.env.JWT_SECRET)
-    } catch (error) {
-        return res.status(401).json({
-            massage: "Unauthorized Access"
-        })
-    }
-
-    const userId = decode.id
-
-    const post = await PostModel.find({ userId })
-
-    if (!post) {
+    if (!post.length) {
         return res.status(404).json({
-            massage: "Post not found"
-        })
-    }
-
-
-
-    return res.status(200).json({
-        massage: "Post fatch successfully",
-        post
-    })
-
-
-
-}
-
-const getSpecificPostByID = async (req, res) => {
-
-    const token = req.cookies.token
-
-    if (!token) {
-        return res.status(401).json({
-            massage: "Token is unauthorize"
-        })
-    }
-
-    let decode;
-
-    try {
-        decode = jwt.verify(token, process.env.JWT_SECRET)
-    } catch (error) {
-        return res.status(401).json({
-            massage: "User is unauthorize"
-        })
-    }
-
-    const postId = req.params.postId
-    const userId = decode.id
-
-    const post = await PostModel.findById(postId);
-    
-    
-    const isThisUserPost =  post.userId.toString() === userId
-
-    if (!isThisUserPost) {
-        return res.status(403).json({
-            massage: "Forbidden content"
+            message: "Post not found"
         })
     }
 
     res.status(200).json({
-        massage: "Post fatch successfully",
+        message: "Post fetched successfully",
         post
     })
 
-}
 
+}
+/** 
+ * @route GET - /api/posts/details/:postId [protected]
+ * @description Get post details by postId and check if the user is authorized to view the post
+ */
+async function getPostDetailsById(req, res) {
+    const userId = req.user.id
+    const postId = req.params.postId
+
+    const post = await PostModel.findOne({ _id: postId })
+
+
+    const isUserAuthorized = post.user.toString() === userId
+
+    if (!isUserAuthorized) {
+        return res.status(403).json({
+            message: "Forbidden content"
+        })
+    }
+
+    res.status(200).json({
+        message: "Post fetched successfully",
+        post
+    })
+}
 module.exports = {
-    createPostController,
-    getAllPostsController,
-    getSpecificPostByID
+    createPost,
+    getPostOfUser,
+    getPostDetailsById
 }
