@@ -83,7 +83,28 @@ async function login(req, res) {
     })
 }
 
+
+async function getMe(req,res){
+    const userId = req.user.id
+
+    const user = await UserModel.findById({_id:userId})
+
+    res.status(200).json({
+        user:{
+            id:user._id,
+            username: user.username,
+            email: user.email,
+            profileImage: user.profileImage,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+        }
+    })
+
+}
+
+
 module.exports = {
     register,
-    login
+    login,
+    getMe
 }
