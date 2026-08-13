@@ -18,9 +18,11 @@ async function createPost(req, res) {
         folder: "Instagram-clone/post"
     })
 
-
+    const { caption } = req.body
+    console.log(caption);
+    
     const post = await PostModel.create({
-        caption: req.body.caption,
+        caption: caption,
         user: userId,
         postImage: file.url
     })
@@ -86,21 +88,21 @@ async function likeByPostId(req, res) {
     const postId = req.params.postId
     const username = req.user.username
 
-    const post = await PostModel.findById({_id: postId})
+    const post = await PostModel.findById({ _id: postId })
 
-    if(!post){
+    if (!post) {
         return res.status(404).json({
             message: "Post not found"
         })
     }
 
     let like;
-    try{
+    try {
         like = await LikeModel.create({
-        post: post._id,
-        user: username
-    })
-    }catch(err){
+            post: post._id,
+            user: username
+        })
+    } catch (err) {
         res.status(400).json({
             message: `Post already like by ${username}`
         })
@@ -111,10 +113,18 @@ async function likeByPostId(req, res) {
         like
     })
 }
+async function getFeed(req, res) {
+    const posts = await PostModel.find().populate("user")
 
+    res.status(200).json({
+        message: "Posts fetch successfully",
+        posts
+    })
+}
 module.exports = {
     createPost,
     getPostOfUser,
     getPostDetailsById,
-    likeByPostId
+    likeByPostId,
+    getFeed
 }

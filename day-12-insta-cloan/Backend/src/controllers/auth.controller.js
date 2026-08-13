@@ -59,8 +59,14 @@ async function login(req, res) {
             { username },
             { email }
         ]
-    })
+    }).select("+password")
+    const isPasswordMatch = await bcrypt.compare(password, user.password)
 
+    if (!isPasswordMatch) {
+        return res.status(409).json({
+            message: `Invalid Password`
+        })
+    }
     if (!user) {
         return res.status(404).json({
             message: `User dose not exists with ${user.email ? "email" : "username"}`
@@ -72,7 +78,7 @@ async function login(req, res) {
         username: user.username
     }, process.env.JWT_SECRET)
 
-    res.cookie("token",token)
+    res.cookie("token", token)
 
     res.status(200).json({
         message: "User login successfully",
@@ -84,14 +90,14 @@ async function login(req, res) {
 }
 
 
-async function getMe(req,res){
+async function getMe(req, res) {
     const userId = req.user.id
 
-    const user = await UserModel.findById({_id:userId})
+    const user = await UserModel.findById({ _id: userId })
 
     res.status(200).json({
-        user:{
-            id:user._id,
+        user: {
+            id: user._id,
             username: user.username,
             email: user.email,
             profileImage: user.profileImage,

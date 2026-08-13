@@ -1,19 +1,20 @@
 import { createBrowserRouter } from "react-router";
 import Login from './features/auth/pages/Login.jsx'
 import Register from './features/auth/pages/Register.jsx'
+import Feed from "./features/post/pages/Feed.jsx";
 
 
 export const router = createBrowserRouter([
     {
         path: "/login",
-        element: <Login/>
+        element: <Login />
     },
     {
         path: "/register",
-        element: <Register/>
-        },
+        element: <Register />
+    },
     {
         path: "/",
-        element: <h1>Welcome To Fullstack</h1>
+        element: <Feed />
     }
 ])
