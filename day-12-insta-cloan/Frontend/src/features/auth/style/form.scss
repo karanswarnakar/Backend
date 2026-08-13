@@ -1,0 +1,49 @@
+@mixin flex-column($gap: 0) {
+    display: flex;
+    flex-flow: column;
+    gap: $gap;
+}
+
+main {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container {
+    @include flex-column(1rem);
+    min-width: 350px;
+
+    h1 {
+        color: var(--color-primary)
+    }
+
+    form {
+        @include flex-column(1rem);
+
+        input {
+            font-size: var(--fs-lg);
+            padding: var(--fs-md) var(--fs-xs);
+            border-radius: var(--radius-md);
+            border: none;
+            outline: none;
+            transition: all var(--transition-fast);
+        }
+        p{
+            color: var(--color-primary);
+            text-align: center;
+            
+            a{
+                font-weight: var(--fw-black);
+                text-decoration: none;
+                color: var(--color-brand);
+            }
+        }
+    }
+}
+
+.loading{
+    color: var(--color-primary);
+}
