@@ -1,9 +1,11 @@
 import React from 'react'
+import { Link } from 'react-router'
 
-const Post = ({user, post}) => {
+const Post = ({ user, post,hendelLike, hendeldisLike }) => {
     return (
         <div className='post'>
             <div className="top">
+             <Link to={`/profile`}>
                 <div className="user">
                     <img src={user.profileImage} alt="!image" className='userImage' />
 
@@ -12,23 +14,30 @@ const Post = ({user, post}) => {
                             <img
                                 src="https://ik.imagekit.io/icuoatuu2/transparent.png"
                                 alt="Verified"
-                                
+
                             />
                         </span></h2>
                         <p>@{user.username} <span>. 2h</span></p>
                     </div>
                 </div>
+             </Link>
                 <button type='button'>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5 10C3.9 10 3 10.9 3 12C3 13.1 3.9 14 5 14C6.1 14 7 13.1 7 12C7 10.9 6.1 10 5 10ZM19 10C17.9 10 17 10.9 17 12C17 13.1 17.9 14 19 14C20.1 14 21 13.1 21 12C21 10.9 20.1 10 19 10ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z"></path></svg>
                 </button>
             </div>
-            <img src={post.postImage} alt="postimage" className='post-image'/>
+           <div className="image-contener">
+             <img src={post.postImage} alt="postimage" className='post-image' />
 
+           </div>
             <div className="icons">
                 <div className="icon_set_1">
-                    <div className="like">
-                        <button>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 4.52853C14.35 2.42 17.98 2.49 20.2426 4.75736C22.5053 7.02472 22.583 10.637 20.4786 12.993L11.9999 21.485L3.52138 12.993C1.41705 10.637 1.49571 7.01901 3.75736 4.75736C6.02157 2.49315 9.64519 2.41687 12.001 4.52853ZM18.827 6.1701C17.3279 4.66794 14.9076 4.60701 13.337 6.01687L12.0019 7.21524L10.6661 6.01781C9.09098 4.60597 6.67506 4.66808 5.17157 6.17157C3.68183 7.66131 3.60704 10.0473 4.97993 11.6232L11.9999 18.6543L19.0201 11.6232C20.3935 10.0467 20.319 7.66525 18.827 6.1701Z"></path></svg>
+                    <div className={post.isLiked ? "liked" : "notLiked"}>
+                        <button
+                            onClick={()=>{
+                                post.isLiked ? hendeldisLike(post._id) : hendelLike(post._id)
+                            }}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={post.isLiked ? "#ff0000" : "#fff"}><path d={post.isLiked ? "M12.001 4.52853C14.35 2.42 17.98 2.49 20.2426 4.75736C22.5053 7.02472 22.583 10.637 20.4786 12.993L11.9999 21.485L3.52138 12.993C1.41705 10.637 1.49571 7.01901 3.75736 4.75736C6.02157 2.49315 9.64519 2.41687 12.001 4.52853Z" : "M12.001 4.52853C14.35 2.42 17.98 2.49 20.2426 4.75736C22.5053 7.02472 22.583 10.637 20.4786 12.993L11.9999 21.485L3.52138 12.993C1.41705 10.637 1.49571 7.01901 3.75736 4.75736C6.02157 2.49315 9.64519 2.41687 12.001 4.52853ZM18.827 6.1701C17.3279 4.66794 14.9076 4.60701 13.337 6.01687L12.0019 7.21524L10.6661 6.01781C9.09098 4.60597 6.67506 4.66808 5.17157 6.17157C3.68183 7.66131 3.60704 10.0473 4.97993 11.6232L11.9999 18.6543L19.0201 11.6232C20.3935 10.0467 20.319 7.66525 18.827 6.1701Z"}></path></svg>
                         </button>
                         <span>40k</span>
                     </div>
@@ -67,7 +76,7 @@ const Post = ({user, post}) => {
                         </span>
                     </span>
                 </b>{" "}
-               {post.caption}
+                {post.caption}
             </p>
         </div>
     )

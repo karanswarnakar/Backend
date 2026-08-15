@@ -1,0 +1,15 @@
+.form-container {
+    min-width: 380px;
+    form {
+        input, label {
+            max-width: 380px;
+            background-color: var(--color-primary);
+            color: var(--bg-primary) ;
+        }
+        label {
+            color: var(--color-primary);
+            background-color: transparent;
+            border: 3px dotted var(--color-primary);
+        }
+    }
+}

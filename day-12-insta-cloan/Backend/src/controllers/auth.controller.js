@@ -95,7 +95,7 @@ async function getMe(req, res) {
 
     const user = await UserModel.findById({ _id: userId })
 
-    res.status(200).json({
+    return res.status(200).json({
         user: {
             id: user._id,
             username: user.username,

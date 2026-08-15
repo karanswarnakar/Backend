@@ -23,7 +23,7 @@ main {
     form {
         @include flex-column(1rem);
 
-        input {
+        input, label {
             font-size: var(--fs-lg);
             padding: var(--p-md) var(--p-xs);
             border-radius: var(--radius-md);

@@ -20,7 +20,7 @@ async function createPost(req, res) {
 
     const { caption } = req.body
     console.log(caption);
-    
+
     const post = await PostModel.create({
         caption: caption,
         user: userId,
@@ -95,26 +95,75 @@ async function likeByPostId(req, res) {
             message: "Post not found"
         })
     }
-
-    let like;
-    try {
-        like = await LikeModel.create({
+    const isLike = await LikeModel.findOne({
             post: post._id,
             user: username
         })
-    } catch (err) {
-        res.status(400).json({
+  
+    if(isLike){
+        return  res.status(400).json({
             message: `Post already like by ${username}`
         })
+   
     }
+
+    const like = await LikeModel.create({
+            post: post._id,
+            user: username
+        }) 
+       
 
     res.status(201).json({
         message: "Post liked successfully",
         like
     })
 }
+async function disLikeByPostId(req, res) {
+    const postId = req.params.postId
+    const username = req.user.username
+
+    const post = await PostModel.findById({ _id: postId })
+
+    if (!post) {
+        return res.status(404).json({
+            message: "Post not found"
+        })
+    }
+
+    let dislike;
+    try {
+        dislike = await LikeModel.findOneAndDelete({
+            post: post._id,
+            user: username
+        })
+    } catch (err) {
+        res.status(400).json({
+            message: `Post already disliked by ${username}`
+        })
+    }
+
+    res.status(201).json({
+        message: "Post disliked successfully",
+        dislike
+    })
+}
+
+
 async function getFeed(req, res) {
-    const posts = await PostModel.find().populate("user")
+
+    const user = req.user
+
+    const posts = await Promise.all((await PostModel.find().populate("user").lean())
+        .map(async (post) => {
+            const isLiked = await LikeModel.findOne({
+                user: user.username,
+                post: post._id
+            })
+
+            post.isLiked = Boolean(isLiked)
+
+            return post
+        }))
 
     res.status(200).json({
         message: "Posts fetch successfully",
@@ -126,5 +175,6 @@ module.exports = {
     getPostOfUser,
     getPostDetailsById,
     likeByPostId,
+    disLikeByPostId,
     getFeed
 }
