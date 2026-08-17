@@ -1,6 +1,7 @@
 const UserModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const BlacklistModel = require('../models/blacklist.model');
 /**  
 * @route POST - api/auth/register 
 * @description  Register a new user save user to database and create a token and save in cookie
@@ -108,9 +109,29 @@ async function getMe(req, res) {
 
 }
 
+async function logout(req,res) {
+    const token = req.cookies.token
+
+    try {
+        const blacklist = await BlacklistModel.create({
+            token
+        })
+        return res.status(200).json({
+            massage: "User logout successfully."
+        })
+    } catch (err) {
+        return res.status(400).json({
+            message: "User already logout"
+        })
+    }
+
+
+}
+
 
 module.exports = {
     register,
     login,
-    getMe
+    getMe,
+    logout
 }

@@ -8,5 +8,5 @@ authRouter.post("/register", authController.register)
 authRouter.post("/login", authController.login)
 
 authRouter.get("/get-me", identifyUser, authController.getMe)
-
+authRouter.get("/logout", authController.logout)
 module.exports = authRouter
