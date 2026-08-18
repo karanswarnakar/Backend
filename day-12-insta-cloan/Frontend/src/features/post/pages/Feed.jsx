@@ -17,7 +17,8 @@ const Feed = () => {
         hendelFeed,
         hendelLike,
         hendeldisLike,
-        hendelGetMe
+        hendelGetMe,
+        setPost
     } = usePost();
 
     const navigate = useNavigate()
@@ -65,6 +66,7 @@ const Feed = () => {
                             key={post._id}
                             hendelLike={hendelLike}
                             hendeldisLike={hendeldisLike}
+                            setPost={setPost}
                         />
                     ))}
 

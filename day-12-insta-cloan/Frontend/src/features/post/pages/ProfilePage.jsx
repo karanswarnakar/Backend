@@ -1,7 +1,14 @@
 import React from "react";
 import "../style/profile.scss";
+import { usePost } from "../hooks/usePost";
 
 const Profile = () => {
+
+   const {post} = usePost()
+
+   console.log(post);
+   
+
     const posts = [
         "https://picsum.photos/500/500?random=1",
         "https://picsum.photos/500/500?random=2",

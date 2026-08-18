@@ -1,11 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-const Post = ({ user, post,hendelLike, hendeldisLike }) => {
+const Post = ({ user, post,hendelLike, hendeldisLike,setPost }) => {
+    
     return (
         <div className='post'>
             <div className="top">
-             <Link to={`/profile`}>
+             <Link to={`/profile`}
+                onClick={()=>{setPost({user,post})}}
+             >
                 <div className="user">
                     <img src={user.profileImage} alt="!image" className='userImage' />
 

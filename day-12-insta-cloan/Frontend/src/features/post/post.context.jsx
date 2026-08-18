@@ -7,7 +7,7 @@ export const PostProvider = ({ children }) => {
     const [post, setPost] = useState(null);
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(false);
-
+    
     return (
         <PostContext.Provider
             value={{
