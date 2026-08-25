@@ -1,19 +1,28 @@
 require('dotenv').config();
-const express = require('express');
-const app = express();
 const cookieParser = require('cookie-parser');
+const express = require('express');
+const app = express()
+const cors = require('cors');
 
 
 app.use(express.json())
 app.use(cookieParser())
-
-// Require Routes
-const authRouth = require('./routes/auth.route');
-
-// Routes
-app.use("/api/auth", authRouth)
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials: true
+}))
 
 
+// Required Router 
+const authRouter = require('./routers/auth.route');
+const songRouter = require('./routers/song.route');
 
 
-module.exports = app;
+// Router
+app.use("/api/auth", authRouter)
+app.use("/api/songs", songRouter)
+
+
+
+
+module.exports = app

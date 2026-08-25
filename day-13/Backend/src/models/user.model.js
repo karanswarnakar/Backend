@@ -1,28 +1,24 @@
-const mongoose = require('mongoose');
-const identifyUser = require('../middlewares/auth.middleware');
-const BlackList = require('./blacklist.model');
+const mongoose = require("mongoose");
+const { select } = require("../config/cache");
 
 const userSchema = new mongoose.Schema({
-    username: {
+    username:{
         type: String,
-        required: [true, "Username is required"],
-        unique: [true, "Username must be unique"],
+        required:[true, "Username is required"],
+        unique:[true, "Username need to be unique"]
     },
-    email: {
+    email:{
         type: String,
-        required: [true, "Email is required"],
-        unique: [true, "Email must be unique"]
+        required:[true, "Email is required"],
+        unique:[true, "Email need to be unique"]
     },
-    password: {
+    password:{
         type: String,
-        required: [true, "Password is required"],
+        required:[true, "Password is required"],
         select: false
-    }
-}, {
-    timestamps: true,
-});
+    },
+},{timeseries: true})
 
+const UserModel = mongoose.model("User", userSchema)
 
-const UserModel = mongoose.model('User', userSchema);
-
-module.exports = UserModel;
+module.exports = UserModel

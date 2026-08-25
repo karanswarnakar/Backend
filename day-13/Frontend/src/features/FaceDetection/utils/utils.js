@@ -1,327 +1,67 @@
 import {
     FaceLandmarker,
-    FilesetResolver,
+    FilesetResolver
 } from "@mediapipe/tasks-vision";
 
 
-export const detect = ({
-    videoRef,
-    faceLandmarkerRef,
-    setMood,
-}) => {
+export const init = async ({ landmarkerRef, videoRef, streamRef }) => {
+    const vision = await FilesetResolver.forVisionTasks(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+    );
 
-    const video = videoRef.current;
+    landmarkerRef.current = await FaceLandmarker.createFromOptions(
+        vision,
+        {
+            baseOptions: {
+                modelAssetPath:
+                    "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task"
+            },
+            outputFaceBlendshapes: true,
+            runningMode: "VIDEO",
+            numFaces: 1
+        }
+    );
 
-    const faceLandmarker =
-        faceLandmarkerRef.current;
-
-
-    if (!video || !faceLandmarker) {
-        return;
-    }
-
-    if (video.readyState < 2) {
-        return;
-    }
-
-
-    const results =
-        faceLandmarker.detectForVideo(
-            video,
-            performance.now()
-        );
-
-
-    if (
-        !results.faceBlendshapes ||
-        results.faceBlendshapes.length === 0
-    ) {
-        setMood("No face detected");
-        return;
-    }
-
-
-    const categories =
-        results.faceBlendshapes[0].categories;
-
-
-    const getScore = (name) => {
-
-        const category =
-            categories.find(
-                (item) =>
-                    item.categoryName === name
-            );
-
-        return category?.score ?? 0;
-    };
-
-
-    const smile =
-        (
-            getScore("mouthSmileLeft") +
-            getScore("mouthSmileRight")
-        ) / 2;
-
-
-    const frown =
-        (
-            getScore("mouthFrownLeft") +
-            getScore("mouthFrownRight")
-        ) / 2;
-
-
-    const browDown =
-        (
-            getScore("browDownLeft") +
-            getScore("browDownRight")
-        ) / 2;
-
-
-    const jawOpen =
-        getScore("jawOpen");
-
-
-    const eyeWide =
-        (
-            getScore("eyeWideLeft") +
-            getScore("eyeWideRight")
-        ) / 2;
-
-
-    const browUp =
-        (
-            getScore("browOuterUpLeft") +
-            getScore("browOuterUpRight")
-        ) / 2;
-
-
-    let currentMood = "Neutral 😐";
-
-
-    if (
-        jawOpen > 0.10 &&
-        eyeWide > 0.10 &&
-        browUp > 0.10
-    ) {
-        currentMood = "Surprised 😮";
-
-    } else if (
-        smile > 0.35
-    ) {
-        currentMood = "Happy 😊";
-
-    } else if (
-        frown > 0.05 ||
-        browDown > 0.20
-    ) {
-        currentMood = "Sad 😢";
-    }
-
-
-    setMood(currentMood);
+    streamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
+    videoRef.current.srcObject = streamRef.current;
+    await videoRef.current.play();
 };
 
+export const detect = ({ landmarkerRef, videoRef, setExpression }) => {
+    if (!landmarkerRef.current || !videoRef.current) return;
 
-export const init = async ({
-    videoRef,
-    faceLandmarkerRef,
-    streamRef,
-    animationRef,
-    setMood,
-    setError,
-}) => {
+    const results = landmarkerRef.current.detectForVideo(
+        videoRef.current,
+        performance.now()
+    );
 
-    try {
+    if (results.faceBlendshapes?.length > 0) {
+        const blendshapes = results.faceBlendshapes[ 0 ].categories;
 
-        setMood("Loading...");
-        setError("");
+        const getScore = (name) =>
+            blendshapes.find((b) => b.categoryName === name)?.score || 0;
 
+        const smileLeft = getScore("mouthSmileLeft");
+        const smileRight = getScore("mouthSmileRight");
+        const jawOpen = getScore("jawOpen");
+        const browUp = getScore("browInnerUp");
+        const frownLeft = getScore("mouthFrownLeft");
+        const frownRight = getScore("mouthFrownRight");
 
-        // ================================
-        // MEDIAPIPE
-        // ================================
+        // console.log(getScore("mouthFrownLeft"))
 
-        const vision =
-            await FilesetResolver.forVisionTasks(
-                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
-            );
+        let currentExpression = "Neutral";
 
-
-        const faceLandmarker =
-            await FaceLandmarker.createFromOptions(
-                vision,
-                {
-                    baseOptions: {
-                        modelAssetPath:
-                            "/models/face_landmarker.task",
-                    },
-
-                    runningMode: "VIDEO",
-
-                    numFaces: 1,
-
-                    outputFaceBlendshapes: true,
-
-                    outputFacialTransformationMatrixes: true,
-
-                    minFaceDetectionConfidence: 0.5,
-
-                    minFacePresenceConfidence: 0.5,
-
-                    minTrackingConfidence: 0.5,
-                }
-            );
-
-
-        faceLandmarkerRef.current =
-            faceLandmarker;
-
-
-        // ================================
-        // CAMERA
-        // ================================
-
-        const stream =
-            await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: 640,
-                    height: 480,
-                    facingMode: "user",
-                },
-
-                audio: false,
-            });
-
-
-        streamRef.current = stream;
-
-
-        // ================================
-        // VIDEO
-        // ================================
-
-        const video =
-            videoRef.current;
-
-
-        if (!video) {
-            throw new Error(
-                "Video element does not exist"
-            );
+        if (smileLeft > 0.5 && smileRight > 0.5) {
+            currentExpression = "happy";
+        } else if (jawOpen > 0.2 && browUp > 0.2) {
+            currentExpression = "surprised";
+        } else if (frownLeft > 0.0001 && frownRight > 0.0001) {
+            currentExpression = "sad";
         }
 
+        setExpression(currentExpression);
 
-        video.srcObject = stream;
-
-
-        await new Promise((resolve) => {
-
-            if (video.readyState >= 1) {
-                resolve();
-                return;
-            }
-
-            video.onloadedmetadata = resolve;
-        });
-
-
-        await video.play();
-
-
-        // ================================
-        // DETECTION LOOP
-        // ================================
-
-        const loop = () => {
-
-            detect({
-                videoRef,
-                faceLandmarkerRef,
-                setMood,
-            });
-
-
-            animationRef.current =
-                requestAnimationFrame(loop);
-        };
-
-
-        loop();
-
-    } catch (err) {
-
-        console.error(
-            "Initialization Error:",
-            err
-        );
-
-
-        setMood("Error");
-
-
-        setError(
-            err?.message ||
-            "Something went wrong"
-        );
-    }
-};
-
-
-export const cleanup = ({
-    videoRef,
-    faceLandmarkerRef,
-    streamRef,
-    animationRef,
-}) => {
-
-    // ================================
-    // STOP LOOP
-    // ================================
-
-    if (animationRef.current) {
-
-        cancelAnimationFrame(
-            animationRef.current
-        );
-
-        animationRef.current = null;
-    }
-
-
-    // ================================
-    // STOP CAMERA
-    // ================================
-
-    if (streamRef.current) {
-
-        streamRef.current
-            .getTracks()
-            .forEach((track) => {
-                track.stop();
-            });
-
-        streamRef.current = null;
-    }
-
-
-    // ================================
-    // CLEAR VIDEO
-    // ================================
-
-    if (videoRef.current) {
-        videoRef.current.srcObject = null;
-    }
-
-
-    // ================================
-    // CLOSE MEDIAPIPE
-    // ================================
-
-    if (faceLandmarkerRef.current) {
-
-        faceLandmarkerRef.current.close();
-
-        faceLandmarkerRef.current = null;
+        return currentExpression
     }
 };

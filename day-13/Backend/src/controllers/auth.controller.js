@@ -1,54 +1,53 @@
-const UserModel = require('../models/user.model.js');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const BlacklistModel = require('../models/blacklist.model.js');
-const redis = require('../config/cache.js');
+const bcrypt = require('bcrypt');
+const UserModel = require('../models/user.model');
+const redis = require('../config/cache');
 
 
+async function register(req, res) {
+    const { username, email, password } = req.body
 
-async function registerUser(req, res) {
-    const { username, email, password } = req.body;
-
-    const isUserExists = await UserModel.findOne({
-        $or: [
-            { username },
-            { email }
-        ]
+    const isUserExist = await UserModel.findOne({
+        username, email, password
     })
 
-    if (isUserExists) {
+    if (isUserExist) {
         return res.status(400).json({
-            message: "User already exists this username or email"
+            message: "User exists with this username or email"
         })
     }
 
-    const hash = await bcrypt.hash(password, 10);
+    const hash = await bcrypt.hash(password, 10)
 
     const user = await UserModel.create({
         username,
         email,
-        password: hash
+        password:hash
     })
+
     const token = jwt.sign({
         id: user._id,
         username: user.username
     }, process.env.JWT_SECRET, { expiresIn: "3d" })
 
     res.cookie("token", token)
-    res.status(201).json({
-        message: "User created successfully.",
+
+    return res.status(201).json({
+        message: "User registered successfully.",
         user: {
-            id: user._id,
             username: user.username,
             email: user.email,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         }
     })
+
+
 }
 
-async function loginUser(req, res) {
+async function login(req, res) {
     const { username, email, password } = req.body
+
     const user = await UserModel.findOne({
         $or: [
             { username },
@@ -57,71 +56,64 @@ async function loginUser(req, res) {
     }).select("+password")
 
     if (!user) {
-        return res.status(404).json({
-            message: "User not found."
-        })
-    }
-    const isPasswordMatch = bcrypt.compare(password, user.password)
-    if (!isPasswordMatch) {
         return res.status(401).json({
-            message: "Invalid Password"
+            message: "Invalid credentials"
         })
     }
+    const isPasswordMatched = await bcrypt.compare(password, user.password)
+    if (!isPasswordMatched) {
+        return res.status(409).json({
+            message: "Invalid credentials"
+        })
+    }
+
     const token = jwt.sign({
         id: user._id,
         username: user.username
     }, process.env.JWT_SECRET, { expiresIn: "3d" })
 
     res.cookie("token", token)
-
-    res.status(200).json({
+    
+    return res.status(200).json({
         message: "User login successfully.",
         user: {
-            id: user._id,
             username: user.username,
             email: user.email,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         }
     })
-}
-
-async function getMe(req, res) {
-    const decode = req.user
-
-    const user = await UserModel.findById(decode.id)
-
-    res.status(200).json({
-        message: "User fetch successfully.",
-        user
-    })
 
 }
 
-
-async function logoutUser(req, res) {
+async function logout(req, res) {
+    const userId = req.user.id
     const token = req.cookies.token
 
-    // const blacklist = await BlacklistModel.findOne(
-    //     {token}
-    // )
+    const blacklist = await redis.set(token, Date.now().toString(), "EX", 60*60)
 
-    await redis.set(token, Date.now().toString(),"EX", 60*60)
-   res.clearCookie("token")
+    res.clearCookie("token")
+
     return res.status(200).json({
         message: "User logout successfully."
     })
-    
+
+
+}
+
+async function getMe(req, res) {
+    const user = await UserModel.findOne({
+        username: req.user.username
+    })
+    return res.status(200).json({
+        message: "User fetch successfully.",
+        user
+    })
 }
 
 module.exports = {
-    registerUser,
-    loginUser,
-    getMe,
-    logoutUser
-}
-
-
-
-
-
+    register,
+    login,
+    logout,
+    getMe
+};
