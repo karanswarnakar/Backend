@@ -1,10 +1,7 @@
 import FollowModel from "../models/follow.model.js"
 import UserModel from "../models/user.model.js"
 
-/** * 
-@route POST - /api/users/follow/:username [protected]
-@description Follow a user by username and check if the user is authorized to follow the user
- */
+
 export async function followUser(req, res) {
     const follower = req.user.username;
     const followee = req.params.username;
@@ -42,10 +39,7 @@ export async function followUser(req, res) {
 
 }
 
-/** * 
-@route POST - /api/users/unfollow/:username [protected]
-@description Follow a user by username and check if the user is authorized to unfollow the user remove document from db
- */
+
 export async function unfollowUser(req, res) {
     const follower = req.user.username
     const followee = req.params.username
@@ -86,13 +80,6 @@ export async function unfollowUser(req, res) {
 }
 
 
-
-
-
-/** * 
-@route PATCH - /api/users/update/status/accepted/:username
-@description update status ["accepted"] 
- */
 export async function acceptFollowerRequest(req, res) {
 
 
@@ -124,10 +111,7 @@ export async function acceptFollowerRequest(req, res) {
 }
 
 
-/** * 
-@route PATCH - /api/users/update/status/rejected/:username
-@description update status ["rejected"] 
- */
+
 export async function rejectFollowerRequest(req, res) {
     const follower = req.params.username
 
@@ -163,10 +147,8 @@ export async function rejectFollowerRequest(req, res) {
     })
 }
 
-/** * 
-@route GET - /api/users/status/pending/:username
-@description getting all pending status user ["pending"] 
-*/
+
+
 export async function userPendingFollower(req, res) {
     const followee = req.params.username // a
     const user = req.user.username // a

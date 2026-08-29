@@ -6,9 +6,9 @@ import { toFile } from "@imagekit/nodejs"
 const client = new ImageKit({
     privateKay: process.env.IMAGEKIT_PRIVATE_KEY
 })
-/** 
- * @route POST - /api/posts [protected]
- */
+
+
+
 async function createPost(req, res) {
     const userId = req.user.id
 
@@ -32,9 +32,9 @@ async function createPost(req, res) {
         post
     })
 }
-/** 
- * @route GET - /api/posts [protected]
- */
+
+
+
 async function getPostOfUser(req, res) {
 
     const userId = req.user.id
@@ -54,10 +54,9 @@ async function getPostOfUser(req, res) {
 
 
 }
-/** 
- * @route GET - /api/posts/details/:postId [protected]
- * @description Get post details by postId and check if the user is authorized to view the post
- */
+
+
+
 async function getPostDetailsById(req, res) {
     const userId = req.user.id
     const postId = req.params.postId
@@ -79,10 +78,7 @@ async function getPostDetailsById(req, res) {
     })
 }
 
-/** * 
- * @route GET - /api/posts/like/:postId [protected]
- * @description Like a post by postId and check if the user has already liked the post 
- */
+
 
 async function likeByPostId(req, res) {
     const postId = req.params.postId
@@ -118,6 +114,8 @@ async function likeByPostId(req, res) {
         like
     })
 }
+
+
 async function disLikeByPostId(req, res) {
     const postId = req.params.postId
     const username = req.user.username

@@ -4,10 +4,7 @@ import UserModel from '../models/user.model.js';
 import BlacklistModel from '../models/blacklist.model.js';
 
 
-/**  
-* @route POST - api/auth/register 
-* @description  Register a new user save user to database and create a token and save in cookie
- */
+
 async function register(req, res) {
     const { username, email, password, profileImage } = req.body;
 
@@ -49,11 +46,7 @@ async function register(req, res) {
 }
 
 
-/**  
-* @route POST - api/auth/login 
-* @description  login a user and create a token and save in cookie and return user data
-* @function {username, email} any of this can use for login user
- */
+
 async function login(req, res) {
     const { username, email, password } = req.body
 
@@ -111,7 +104,7 @@ async function getMe(req, res) {
 
 }
 
-async function logout(req,res) {
+async function logout(req, res) {
     const token = req.cookies.token
 
     try {
@@ -131,11 +124,11 @@ async function logout(req,res) {
 }
 
 
-const authController =  {
+const authController = {
     register,
-login,
-getMe,
-logout
+    login,
+    getMe,
+    logout
 }
 
 export default authController;
