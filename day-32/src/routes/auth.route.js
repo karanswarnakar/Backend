@@ -1,6 +1,7 @@
 import { Router } from "express"
 import authController from "../controllers/auth.controller.js"
-import { registerValidation } from "../validations/authValidation.js"
+import { loginValidation, registerValidation } from "../validations/authValidation.js"
+import { IdentifyUser } from "../middlewares/auth.middleware.js"
 const authRouter = Router()
 
 
@@ -13,6 +14,27 @@ const authRouter = Router()
  */
 authRouter.post("/register", registerValidation, authController.register)
 
+
+/** * 
+ * @router POST /api/auth/login
+ * @description Login user and set token in cookie.
+ * @access Public
+ * @body {username, email, password}
+ * 
+ */
+
+authRouter.post("/login", loginValidation ,authController.login)
+
+
+/** * 
+ * @router GET /api/auth/get-me
+ * @description  Get user data.
+ * @access Public
+ * @header {Authorization} - The token
+ * 
+ */
+
+authRouter.get("/get-me", IdentifyUser ,authController.getMe)
 
 
 

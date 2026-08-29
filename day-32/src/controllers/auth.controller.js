@@ -5,7 +5,7 @@ import { sendEmail } from "../services/mail.service.js";
 
 
 
-async function register(req, res, next) {
+async function register(req, res) {
   const { name, username, email, password } = req.body
 
   const isUserExist = await UserModel.findOne({
@@ -173,7 +173,7 @@ async function register(req, res, next) {
 
 
 
-  res.status(201).json({
+  return res.status(201).json({
     message: "User created successfully",
     success: true,
     user: {
@@ -187,36 +187,115 @@ async function register(req, res, next) {
   })
 }
 
+async function login(req, res) {
+  const { username, email, password } = req.body
 
-const verifyEmail = async (req,res) => {
-  const { token } = req.query
-  if (!token) {
-    return res.status(401).json({
-      message: " Invalid token",
+  const user = await UserModel.findOne({
+    $or: [
+      { username },
+      { email }
+    ]
+  }).select("+password")
+
+
+  if (!user) {
+    let msg = ""
+    if (username) {
+      msg = "User not exist with this username"
+    } else if (email) {
+      msg = "User not exist with this email"
+    }
+    return res.status(404).json({
+      message: "User not find",
       success: false,
-      msg: "Token is required"
+      msg
     })
   }
-  const decode = jwt.verify(token, process.env.JWT_SECRET)
 
-  const user = await UserModel.findOne({ email: decode.email })
+  const isPasswordMatched = await bcrypt.compare(password, user.password)
+  if (!isPasswordMatched) {
+    return res.status(409).json({
+      message: "Invalid credentials.",
+      success: false,
+      msg: "Invalid password."
+    })
+  }
+  const isVerified = user.isVerified
 
-  
-  
-  if(!user){
-    return  res.status(404).json({
+  if (!isVerified) {
+    return res.status(400).json({
+      message: "Email is not verified.",
+      success: false,
+      msg: `You need to verify ${user.email}.`
+    })
+  }
+
+
+  const token = jwt.sign({
+    id: user._id,
+    email: user.email
+  }, process.env.JWT_SECRET, { expiresIn: "7d" })
+
+
+  res.cookie("token", token)
+
+  return res.status(200).json({
+    message: "User login successfully.",
+    success: true,
+    msg: `User login successfully ${user.email}.`
+  })
+
+}
+
+async function getMe(req, res) {
+  const userId = req.user.id;
+
+  try {
+    const user = await UserModel.findById(userId)
+
+    return res.status(200).json({
+      message: "User fetch successfully.",
+      success: true,
+      user,
+    })
+  } catch (err) {
+    return res.status(500).json({
       message: "User not found",
       success: false,
-      msg: "User not found"
-    }) 
+      msg: "User not login yet."
+    })
   }
-  
-  user.isVerified = true
-  await user.save()
+}
+
+  async function verifyEmail(req, res) {
+    const { token } = req.query
+    if (!token) {
+      return res.status(401).json({
+        message: " Invalid token",
+        success: false,
+        msg: "Token is required"
+      })
+    }
+    const decode = jwt.verify(token, process.env.JWT_SECRET)
+
+    const user = await UserModel.findOne({ email: decode.email })
 
 
-  
-  const html = `
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+        msg: "User not found"
+      })
+    }
+
+    user.isVerified = true
+    await user.save()
+
+
+
+    const html = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -440,14 +519,16 @@ const verifyEmail = async (req,res) => {
 
   `
 
-  res.send(html)
+    res.send(html)
 
 
-}
+  }
 
-const authController = {
-  register,
-  verifyEmail
-}
+  const authController = {
+    register,
+    login,
+    getMe,
+    verifyEmail
+  }
 
-export default authController
+  export default authController
