@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const BlacklistModel = require('../models/blacklist.model');
+import jwt from 'jsonwebtoken';
+import BlacklistModel from '../models/blacklist.model.js';
 
 async function identifyUser(req,res,next) {
     const token = req.cookies.token
@@ -34,4 +34,4 @@ async function identifyUser(req,res,next) {
 
 }
 
-module.exports = identifyUser
+export default identifyUser

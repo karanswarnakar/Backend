@@ -1,7 +1,9 @@
-const UserModel = require('../models/user.model');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const BlacklistModel = require('../models/blacklist.model');
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import UserModel from '../models/user.model.js';
+import BlacklistModel from '../models/blacklist.model.js';
+
+
 /**  
 * @route POST - api/auth/register 
 * @description  Register a new user save user to database and create a token and save in cookie
@@ -129,9 +131,11 @@ async function logout(req,res) {
 }
 
 
-module.exports = {
+const authController =  {
     register,
-    login,
-    getMe,
-    logout
+login,
+getMe,
+logout
 }
+
+export default authController;

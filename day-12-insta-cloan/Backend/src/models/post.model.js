@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
 
 const postSchema = new mongoose.Schema({
       caption: {
@@ -21,4 +22,4 @@ const postSchema = new mongoose.Schema({
 
 const PostModel = mongoose.model('Post', postSchema);
 
-module.exports = PostModel;
+export default PostModel;

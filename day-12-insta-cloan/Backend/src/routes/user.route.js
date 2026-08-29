@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import userController from '../controllers/user.controller.js';
+import identifyUser from '../middlewares/auth.middleware.js';
+
 const userRouter = express.Router()
-const userController = require('../controllers/user.controller');
-const identifyUser = require('../middlewares/auth.middleware');
 
 userRouter.post("/follow/:username",identifyUser, userController.followUser)
 userRouter.post("/unfollow/:username", identifyUser, userController.unfollowUser)
@@ -13,4 +14,4 @@ userRouter.patch("/update/status/rejected/:username", identifyUser, userControll
 
 userRouter.get("/status/pending/:username", identifyUser, userController.userPendingFollower)
 
-module.exports = userRouter
+export default userRouter

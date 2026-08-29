@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
+
+import postController from '../controllers/post.controller.js'
+import identifyUser from '../middlewares/auth.middleware.js'
+import multer from 'multer'
+
 const postRouter = express.Router()
-const postController = require('../controllers/post.controller');
-
-const identifyUser = require('../middlewares/auth.middleware');
-
-const multer = require('multer')
 
 const uplode = multer({
     storage: multer.memoryStorage()
@@ -24,4 +24,4 @@ postRouter.post("/dislike/:postId", identifyUser, postController.disLikeByPostId
 
 postRouter.get("/feed", identifyUser, postController.getFeed)
 
-module.exports = postRouter
+export default postRouter

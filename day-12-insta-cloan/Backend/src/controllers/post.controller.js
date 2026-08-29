@@ -1,7 +1,7 @@
-const PostModel = require('../models/post.model');
-const LikeModel = require('../models/like.model');
-const ImageKit = require('@imagekit/nodejs');
-const { toFile } = require('@imagekit/nodejs');
+import PostModel from "../models/post.model.js"
+import LikeModel from "../models/like.model.js"
+import ImageKit from "@imagekit/nodejs"
+import { toFile } from "@imagekit/nodejs"
 
 const client = new ImageKit({
     privateKay: process.env.IMAGEKIT_PRIVATE_KEY
@@ -96,22 +96,22 @@ async function likeByPostId(req, res) {
         })
     }
     const isLike = await LikeModel.findOne({
-            post: post._id,
-            user: username
-        })
-  
-    if(isLike){
-        return  res.status(400).json({
+        post: post._id,
+        user: username
+    })
+
+    if (isLike) {
+        return res.status(400).json({
             message: `Post already like by ${username}`
         })
-   
+
     }
 
     const like = await LikeModel.create({
-            post: post._id,
-            user: username
-        }) 
-       
+        post: post._id,
+        user: username
+    })
+
 
     res.status(201).json({
         message: "Post liked successfully",
@@ -170,7 +170,8 @@ async function getFeed(req, res) {
         posts
     })
 }
-module.exports = {
+
+const postController = {
     createPost,
     getPostOfUser,
     getPostDetailsById,
@@ -178,3 +179,5 @@ module.exports = {
     disLikeByPostId,
     getFeed
 }
+
+export default postController;
