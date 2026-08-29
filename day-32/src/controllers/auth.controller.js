@@ -31,7 +31,18 @@ async function register(req, res, next) {
     email,
     password: hash
   })
-  const verificationLink = "#"
+
+  const token = jwt.sign({
+    email: user.email
+  }, process.env.JWT_SECRET)
+
+
+
+  const url = process.env.FRONTEND_URL;
+  const port = process.env.PORT;
+  const verificationLink = `${url}:${port}/api/auth/verify-email?token=${token}`
+
+
   await sendEmail({
     to: user.email,
     subject: "Welcome to DevX AI!",
@@ -177,9 +188,266 @@ async function register(req, res, next) {
 }
 
 
+const verifyEmail = async (req,res) => {
+  const { token } = req.query
+  if (!token) {
+    return res.status(401).json({
+      message: " Invalid token",
+      success: false,
+      msg: "Token is required"
+    })
+  }
+  const decode = jwt.verify(token, process.env.JWT_SECRET)
+
+  const user = await UserModel.findOne({ email: decode.email })
+
+  
+  
+  if(!user){
+    return  res.status(404).json({
+      message: "User not found",
+      success: false,
+      msg: "User not found"
+    }) 
+  }
+  
+  user.isVerified = true
+  await user.save()
+
+
+  
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Email Verified | DevX AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: linear-gradient(
+        135deg,
+        #536fe3 0%,
+        #6d83ed 50%,
+        #8b9df5 100%
+      );
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 45px 35px;
+      text-align: center;
+
+      box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.18);
+
+      animation: slideUp 0.5s ease;
+    }
+
+    /* Success Icon */
+    .success-icon {
+      width: 90px;
+      height: 90px;
+
+      margin: 0 auto 25px;
+
+      border-radius: 50%;
+
+      background: #ecfdf3;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 45px;
+
+      animation: pop 0.5s ease;
+    }
+
+    .title {
+      color: #111827;
+      font-size: 28px;
+      font-weight: 700;
+
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      font-size: 15px;
+      line-height: 1.7;
+
+      margin-bottom: 30px;
+    }
+
+    .button {
+      display: inline-block;
+
+      padding: 14px 32px;
+
+      background: #4f7df3;
+      color: #ffffff;
+
+      text-decoration: none;
+
+      border-radius: 8px;
+
+      font-size: 14px;
+      font-weight: 600;
+
+      transition: 0.2s ease;
+
+      box-shadow:
+        0 6px 15px rgba(79, 125, 243, 0.3);
+    }
+
+    .button:hover {
+      background: #3f6ee8;
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 8px 20px rgba(79, 125, 243, 0.4);
+    }
+
+    .footer {
+      margin-top: 30px;
+
+      color: #9ca3af;
+
+      font-size: 12px;
+    }
+
+    .brand {
+      font-weight: 700;
+      color: #4f7df3;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pop {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+
+      70% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 40px 25px;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="card">
+
+      <!-- Success Icon -->
+      <div class="success-icon">
+        ✓
+      </div>
+
+      <!-- Title -->
+      <h1 class="title">
+        Email Verified!
+      </h1>
+
+      <!-- Description -->
+      <p class="subtitle">
+        Your email address has been successfully verified.
+        Your <strong>DevX AI</strong> account is now active and ready to use.
+      </p>
+
+      <!-- Login Button -->
+      <a
+        href="${process.env.FRONTEND_URL}/api/auth/login"
+        class="button"
+      >
+        Continue to Login
+      </a>
+
+      <!-- Footer -->
+      <div class="footer">
+        Welcome to <span class="brand">DevX AI</span> 🚀
+        <br />
+        © 2026 DevX AI. All rights reserved.
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
+
+
+  `
+
+  res.send(html)
+
+
+}
 
 const authController = {
-  register
+  register,
+  verifyEmail
 }
 
 export default authController
