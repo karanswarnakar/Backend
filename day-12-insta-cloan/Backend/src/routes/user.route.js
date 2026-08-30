@@ -43,4 +43,17 @@ userRouter.patch("/update/status/rejected/:username", identifyUser, userControll
  */
 userRouter.get("/status/pending/:username", identifyUser, userController.userPendingFollower)
 
+
+/** * 
+ * @route GET - /api/users/:userId
+ * @description get user by userId
+ * @access protected 
+ */
+userRouter.get("/:username", identifyUser, userController.getUserByUsername)
+
+
+
+
+
+
 export default userRouter

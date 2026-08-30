@@ -2,9 +2,9 @@ import { createBrowserRouter } from "react-router";
 import Login from './features/auth/pages/Login.jsx'
 import Register from './features/auth/pages/Register.jsx'
 import Feed from "./features/post/pages/Feed.jsx";
-import ProfilePage from "./features/post/pages/ProfilePage.jsx";
 import CreatePost from "./features/post/pages/CreatePost.jsx";
-import EditProfile from "./features/post/components/EditProfile.jsx";
+import ProfilePage from "./features/profile/pages/ProfilePage.jsx";
+import EditProfile from "./features/profile/pages/EditProfile.jsx";
 
 
 export const router = createBrowserRouter([

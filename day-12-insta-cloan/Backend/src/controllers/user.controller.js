@@ -2,7 +2,7 @@ import FollowModel from "../models/follow.model.js"
 import UserModel from "../models/user.model.js"
 
 
-export async function followUser(req, res) {
+async function followUser(req, res) {
     const follower = req.user.username;
     const followee = req.params.username;
 
@@ -40,7 +40,7 @@ export async function followUser(req, res) {
 }
 
 
-export async function unfollowUser(req, res) {
+async function unfollowUser(req, res) {
     const follower = req.user.username
     const followee = req.params.username
 
@@ -80,7 +80,7 @@ export async function unfollowUser(req, res) {
 }
 
 
-export async function acceptFollowerRequest(req, res) {
+async function acceptFollowerRequest(req, res) {
 
 
     const follower = req.params.username // A
@@ -112,7 +112,7 @@ export async function acceptFollowerRequest(req, res) {
 
 
 
-export async function rejectFollowerRequest(req, res) {
+async function rejectFollowerRequest(req, res) {
     const follower = req.params.username
 
 
@@ -149,7 +149,7 @@ export async function rejectFollowerRequest(req, res) {
 
 
 
-export async function userPendingFollower(req, res) {
+async function userPendingFollower(req, res) {
     const followee = req.params.username // a
     const user = req.user.username // a
 
@@ -173,12 +173,33 @@ export async function userPendingFollower(req, res) {
     })
 }
 
+
+async function getUserByUsername(req,res) {
+    const username = req.params.username
+
+    const profile = await UserModel.findOne({username})
+
+    if(!profile){
+        return res.status(404).json({
+            message: "User not found."
+        })
+    }
+
+    res.status(200).json({
+        message:"User fetch successfully.",
+        profile
+    })
+    
+}
+
+
 const userController = {
     followUser,
     unfollowUser,
     acceptFollowerRequest,
     rejectFollowerRequest,
-    userPendingFollower
+    userPendingFollower,
+    getUserByUsername
 }
 
 export default userController;

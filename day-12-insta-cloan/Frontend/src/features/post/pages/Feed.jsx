@@ -6,8 +6,12 @@ import LeftPanel from "../components/LeftPanel";
 import RightPanel from "../components/RightPanel";
 
 import { usePost } from "../hooks/usePost";
+import {useProfile} from "../../profile/hooks/useProfile.jsx";
+
+
 import { useNavigate } from "react-router";
 import Navbar from "../../components/Navbar";
+import { useContext } from "react";
 const Feed = () => {
 
     const {
@@ -20,6 +24,8 @@ const Feed = () => {
         hendelGetMe,
         setPost
     } = usePost();
+
+    const {handleGetProfileByUsername} = useProfile()
 
     const navigate = useNavigate()
 
@@ -67,6 +73,7 @@ const Feed = () => {
                             hendelLike={hendelLike}
                             hendeldisLike={hendeldisLike}
                             setPost={setPost}
+                            handleGetProfileByUsername={handleGetProfileByUsername}
                         />
                     ))}
 

@@ -1,13 +1,12 @@
 import React from "react";
 import "../style/profile.scss";
-import { usePost } from "../hooks/usePost";
+import { useProfile } from "../hooks/useProfile";
 
 const Profile = () => {
+    const {profile} = useProfile()
+    
 
-   const {post} = usePost()
 
-   console.log(post);
-   
 
     const posts = [
         "https://picsum.photos/500/500?random=1",
@@ -26,14 +25,14 @@ const Profile = () => {
                 <div className="profile__top">
                     <div className="profile__avatar">
                         <img
-                            src="https://i.pravatar.cc/300?img=12"
+                            src={profile.profileImage}
                             alt="profile"
                         />
                     </div>
 
                     <div className="profile__info">
                         <div className="profile__name">
-                            <h2>karan</h2>
+                            <h2>{profile.username}</h2>
 
                             <span className="profile__verified">
                                 ✓
@@ -41,7 +40,7 @@ const Profile = () => {
                         </div>
 
                         <p className="profile__username">
-                            @karan
+                            @{profile.username}
                         </p>
 
                         <div className="profile__actions">
