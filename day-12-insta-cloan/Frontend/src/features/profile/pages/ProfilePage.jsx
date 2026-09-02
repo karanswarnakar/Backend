@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../style/profile.scss";
 import { useProfile } from "../hooks/useProfile";
 
 const Profile = () => {
-    const {profile} = useProfile()
-    
+    const { profile } = useProfile();
 
+    const [activeTab, setActiveTab] = useState("Posts");
 
+    // Scroll to top when profile changes
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "instant",
+        });
+    }, [profile?.username]);
+
+    if (!profile) {
+        return <div>Loading...</div>;
+    }
 
     const posts = [
         "https://picsum.photos/500/500?random=1",
@@ -21,16 +33,20 @@ const Profile = () => {
 
     return (
         <div className="profile">
+            
             <div className="profile__header">
+
                 <div className="profile__top">
+
                     <div className="profile__avatar">
                         <img
                             src={profile.profileImage}
-                            alt="profile"
+                            alt={profile.username}
                         />
                     </div>
 
                     <div className="profile__info">
+
                         <div className="profile__name">
                             <h2>{profile.username}</h2>
 
@@ -44,19 +60,26 @@ const Profile = () => {
                         </p>
 
                         <div className="profile__actions">
+
                             <button className="profile__edit">
-                                Edit profile
+                                Edit Profile
                             </button>
 
                             <button className="profile__more">
                                 ⋯
                             </button>
+
                         </div>
+
                     </div>
+
                 </div>
 
                 <div className="profile__bio">
-                    <p>Developer • Creator • Student</p>
+
+                    <p className="profile__role">
+                        Developer • Creator • Student
+                    </p>
 
                     <p>
                         Building things on the internet 🚀
@@ -69,9 +92,12 @@ const Profile = () => {
                     <p className="profile__joined">
                         📅 Joined August 2024
                     </p>
+
                 </div>
 
+
                 <div className="profile__stats">
+
                     <div>
                         <strong>124</strong>
                         <span>Posts</span>
@@ -86,37 +112,55 @@ const Profile = () => {
                         <strong>348</strong>
                         <span>Following</span>
                     </div>
+
                 </div>
+
             </div>
 
+
+            {/* Tabs */}
+
             <div className="profile__tabs">
-                {tabs.map((tab, index) => (
+
+                {tabs.map((tab) => (
+
                     <button
                         key={tab}
-                        className={
-                            index === 0
-                                ? "profile__tab active"
-                                : "profile__tab"
-                        }
+                        onClick={() => setActiveTab(tab)}
+                        className={`profile__tab ${
+                            activeTab === tab ? "active" : ""
+                        }`}
                     >
                         {tab}
                     </button>
+
                 ))}
+
             </div>
 
+
+            {/* Posts */}
+
             <div className="profile__posts">
+
                 {posts.map((image, index) => (
+
                     <div
                         className="profile__post"
                         key={index}
                     >
+
                         <img
                             src={image}
-                            alt="post"
+                            alt={`Post ${index + 1}`}
                         />
+
                     </div>
+
                 ))}
+
             </div>
+
         </div>
     );
 };

@@ -6,6 +6,8 @@
     color: var(--color-primary);
     font-family: var(--ubuntu);
 
+    /* ================= HEADER ================= */
+
     &__header {
         padding: var(--p-3xl);
         border-bottom: 1px solid var(--border-primary);
@@ -17,6 +19,8 @@
         gap: var(--p-2xl);
     }
 
+    /* ================= AVATAR ================= */
+
     &__avatar {
         width: 120px;
         height: 120px;
@@ -24,22 +28,23 @@
         flex-shrink: 0;
 
         border: 2px solid var(--color-brand);
-        border-radius: var(--radius-full);
-
+        border-radius: 50%;
         background: var(--bg-secondary);
 
         img {
             width: 100%;
             height: 100%;
             display: block;
-
             object-fit: cover;
-            border-radius: var(--radius-full);
+            border-radius: 50%;
         }
     }
 
+    /* ================= PROFILE INFO ================= */
+
     &__info {
         flex: 1;
+        min-width: 0;
     }
 
     &__name {
@@ -51,12 +56,14 @@
             margin: 0;
             font-size: var(--fs-2xl);
             font-weight: var(--fw-bold);
+            word-break: break-word;
         }
     }
 
     &__verified {
         width: 18px;
         height: 18px;
+        flex-shrink: 0;
 
         display: flex;
         align-items: center;
@@ -64,8 +71,7 @@
 
         color: var(--white);
         background: var(--color-brand);
-
-        border-radius: var(--radius-full);
+        border-radius: 50%;
 
         font-size: var(--fs-xs);
         font-weight: var(--fw-bold);
@@ -73,11 +79,11 @@
 
     &__username {
         margin: var(--m-xs) 0 var(--m-lg);
-
         color: var(--color-secondary);
         font-size: var(--fs-md);
-        font-weight: var(--fw-regular);
     }
+
+    /* ================= ACTIONS ================= */
 
     &__actions {
         display: flex;
@@ -113,6 +119,10 @@
         width: 40px;
         height: 40px;
 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         color: var(--color-primary);
         background: transparent;
 
@@ -126,12 +136,13 @@
         }
     }
 
+    /* ================= BIO ================= */
+
     &__bio {
         margin-top: var(--m-xl);
 
         p {
             margin: var(--m-xs) 0;
-
             color: var(--color-primary);
             font-size: var(--fs-md);
             line-height: 1.5;
@@ -143,7 +154,6 @@
 
             color: var(--color-info);
             text-decoration: none;
-
             font-size: var(--fs-sm);
 
             &:hover {
@@ -154,24 +164,29 @@
 
     &__joined {
         margin-top: var(--m-lg) !important;
-
         color: var(--color-muted) !important;
         font-size: var(--fs-sm) !important;
     }
+
+    /* ================= STATS ================= */
 
     &__stats {
         display: flex;
         align-items: center;
         gap: var(--p-2xl);
-
         margin-top: var(--m-2xl);
 
         div {
             display: flex;
             align-items: center;
             gap: var(--p-xs);
-
             cursor: pointer;
+
+            &:hover {
+                strong {
+                    text-decoration: underline;
+                }
+            }
         }
 
         strong {
@@ -186,22 +201,21 @@
         }
     }
 
+    /* ================= TABS ================= */
+
     &__tabs {
         display: flex;
-
         border-bottom: 1px solid var(--border-primary);
     }
 
     &__tab {
         position: relative;
-
         flex: 1;
 
         padding: var(--p-lg) var(--p-sm);
 
         color: var(--color-muted);
         background: transparent;
-
         border: none;
 
         font-family: var(--ubuntu);
@@ -209,7 +223,6 @@
         font-weight: var(--fw-medium);
 
         cursor: pointer;
-
         transition: var(--transition-normal);
 
         &:hover {
@@ -224,6 +237,7 @@
                 content: "";
 
                 position: absolute;
+
                 left: 25%;
                 bottom: 0;
 
@@ -231,11 +245,12 @@
                 height: 3px;
 
                 background: var(--color-brand);
-
                 border-radius: var(--radius-full);
             }
         }
     }
+
+    /* ================= POSTS ================= */
 
     &__posts {
         display: grid;
@@ -247,13 +262,10 @@
 
     &__post {
         position: relative;
-
         aspect-ratio: 1 / 1;
-
         overflow: hidden;
 
         background: var(--bg-secondary);
-
         cursor: pointer;
 
         img {
@@ -264,7 +276,7 @@
 
             object-fit: cover;
 
-            transition: var(--transition-slow);
+            transition: transform var(--transition-slow);
         }
 
         &:hover {
@@ -274,7 +286,10 @@
         }
     }
 
+    /* ================= TABLET ================= */
+
     @media (max-width: 700px) {
+
         &__header {
             padding: var(--p-xl);
         }
@@ -305,7 +320,10 @@
         }
     }
 
+    /* ================= MOBILE ================= */
+
     @media (max-width: 480px) {
+
         &__header {
             padding: var(--p-lg);
         }
@@ -339,6 +357,10 @@
         &__tab {
             padding: var(--p-md) var(--p-xs);
             font-size: var(--fs-xs);
+        }
+
+        &__stats {
+            gap: var(--p-xs);
         }
     }
 }

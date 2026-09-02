@@ -1,0 +1,257 @@
+.navbar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 64px;
+
+    background: var(--bg-primary);
+
+    border-bottom: 1px solid var(--border-primary);
+
+    z-index: 1000;
+
+    font-family: var(--ubuntu);
+
+    &__inner {
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+
+        padding: 0 32px;
+
+        gap: 30px;
+    }
+
+
+    /* ================= BRAND ================= */
+
+    &__brand {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        min-width: 220px;
+
+        cursor: pointer;
+    }
+
+    &__brand-logo {
+        width: 36px;
+        height: 36px;
+
+        display: grid;
+        place-items: center;
+
+        background: var(--color-brand);
+
+        color: var(--white);
+
+        border-radius: 10px;
+
+        font-size: 18px;
+        font-weight: var(--fw-bold);
+    }
+
+    &__brand-name {
+        color: var(--color-primary);
+
+        font-size: var(--fs-xl);
+        font-weight: var(--fw-bold);
+
+        span {
+            color: var(--color-brand);
+        }
+    }
+
+
+    /* ================= SEARCH ================= */
+
+    &__search {
+        width: 100%;
+        max-width: 420px;
+
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        margin-left: auto;
+
+        padding: 0 14px;
+
+        background: var(--bg-secondary);
+
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+
+        transition: var(--transition-normal);
+
+        svg {
+            width: 18px;
+            height: 18px;
+
+            color: var(--color-muted);
+
+            flex-shrink: 0;
+        }
+
+        &:focus-within {
+            border-color: var(--color-brand);
+            background: var(--bg-tertiary);
+        }
+
+        input {
+            width: 100%;
+
+            background: transparent;
+
+            border: none;
+            outline: none;
+
+            color: var(--color-primary);
+
+            font-family: var(--ubuntu);
+            font-size: var(--fs-sm);
+
+            &::placeholder {
+                color: var(--color-muted);
+            }
+        }
+    }
+
+
+    /* ================= ACTIONS ================= */
+
+    &__actions {
+        display: flex;
+        align-items: center;
+
+        gap: 14px;
+    }
+
+
+    &__create {
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        padding: 0 16px;
+
+        background: var(--color-brand);
+
+        color: var(--white);
+
+        border: none;
+        border-radius: var(--radius-md);
+
+        font-family: var(--ubuntu);
+        font-size: var(--fs-sm);
+        font-weight: var(--fw-medium);
+
+        cursor: pointer;
+
+        transition: var(--transition-normal);
+
+        span:first-child {
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        &:hover {
+            background: var(--color-brand-hover);
+        }
+
+        &:active {
+            transform: scale(0.97);
+        }
+    }
+
+
+    /* ================= PROFILE ================= */
+
+    &__profile {
+        width: 38px;
+        height: 38px;
+
+        padding: 0;
+
+        overflow: hidden;
+
+        background: transparent;
+
+        border: 1px solid var(--border-secondary);
+        border-radius: 50%;
+
+        cursor: pointer;
+
+        transition: var(--transition-normal);
+
+        img {
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+        }
+
+        &:hover {
+            border-color: var(--color-brand);
+        }
+    }
+
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 700px) {
+
+        &__inner {
+            padding: 0 16px;
+            gap: 15px;
+        }
+
+        &__brand {
+            min-width: auto;
+        }
+
+        &__brand-name {
+            display: none;
+        }
+
+        &__search {
+            max-width: none;
+        }
+    }
+
+
+    @media (max-width: 480px) {
+
+        &__search {
+            display: none;
+        }
+
+        &__inner {
+            justify-content: space-between;
+        }
+
+        &__create {
+            width: 40px;
+            padding: 0;
+        }
+
+        &__create-text {
+            display: none;
+        }
+    }
+}
