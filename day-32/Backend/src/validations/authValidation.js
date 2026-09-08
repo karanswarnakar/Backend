@@ -14,7 +14,7 @@ const validator = (req,res, next) => {
 }
 export const registerValidation = [
 
-    body("name").isString().withMessage("Name must be a string"),
+    body("name").isString().withMessage("Name must be a string").optional(),
     body("username").isLowercase().withMessage("Username must be lowercase"),
     body("email").isEmail().withMessage("Email must be a valid email"),
     body("password")

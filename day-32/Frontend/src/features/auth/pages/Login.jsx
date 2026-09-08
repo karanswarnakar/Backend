@@ -5,6 +5,8 @@ import Button from "../../components/Button"
 import { useAuth } from "../hooks/useAuth"
 import { useSelector } from "react-redux"
 import { Navigate } from "react-router"
+
+
 const Login = () => {
 
     const { handleLogin } = useAuth()
@@ -21,7 +23,7 @@ const Login = () => {
 
 
     async function submitHandler(e) {
-        e.preventDefault()
+        e.preventDefault() 
         await handleLogin({ email, password })
 
 

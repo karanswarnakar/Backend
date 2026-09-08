@@ -12,17 +12,7 @@ const chatSchema = new mongoose.Schema({
       trim: true,
       default: "New Chat",
     },
-
-    messages: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Message",
-      },
-    ],
-  },
-  {
-    timestamps: true,
-  }
+  },{timestamps: true}
 );
 
 const ChatModel = mongoose.model("Chat", chatSchema);

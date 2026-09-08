@@ -1,58 +1,32 @@
-import dotenv from "dotenv/config"
+import "dotenv/config";
 import readline from "readline/promises";
-import { ChatMistralAI } from "@langchain/mistralai"
-import { HumanMessage, tool, createAgent } from 'langchain'
-
-import { z } from 'zod'
-import { sendEmail } from "./mail.service.js";
-
-
-const emailTool = tool(
-    sendEmail,
-    {
-        name: "send_email",
-        description: "user this took to send email",
-        schema: z.object({
-            to: z.string().describe("The recipient's email address"),
-            subject: z.string().describe("This recived the subject"),
-            html: z.string().describe("Html content for the email"),
-        })
-    }
-)
-
-
+import { ChatMistralAI } from "@langchain/mistralai";
+import { HumanMessage } from "langchain";
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
-
 const model = new ChatMistralAI({
     model: "mistral-small-latest",
-})
+    apiKey: process.env.MISTRAL_API_KEY
+});
 
-
-
-const agent = createAgent({
-    model,
-    tools: [emailTool]
-})
-
-
-let messages = []
+let messages = [];
 
 while (true) {
-    const userInput = await rl.question("You: ")
+    const userInput = await rl.question("You: ");
 
-    messages.push(new HumanMessage(userInput))
+    messages.push(new HumanMessage(userInput));
 
-    const response = await agent.invoke({
-        messages,
+    try {
+        const response = await model.invoke(messages);
 
-    })
+        messages.push(response);
 
-    messages.push(response.messages[response.messages.length -1 ])
-
-    console.log("AI: ", messages)
+        console.log("AI:", response.content);
+    } catch (error) {
+        console.error("Mistral Error:", error);
+    }
 }

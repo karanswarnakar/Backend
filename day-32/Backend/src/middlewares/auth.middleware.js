@@ -1,4 +1,3 @@
-import { compare } from "bcrypt"
 import jwt from "jsonwebtoken"
 
 export function IdentifyUser(req, res, next) {
