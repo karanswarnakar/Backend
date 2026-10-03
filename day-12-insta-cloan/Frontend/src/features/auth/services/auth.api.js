@@ -19,9 +19,13 @@ export async function register(username, email, password) {
 
     return res.data
 }
-export async function getMe(username, password) {
+export async function getMe() {
     const res = await api.get("/get-me")
 
+    return res.data
+}
+export async function saveOnboarding(responses) {
+    const res = await api.patch("/onboarding", responses)
     return res.data
 }
 export async function logout() {
@@ -29,7 +33,4 @@ export async function logout() {
 
     return res.data
 }
-
-
-
 

@@ -1,53 +1,34 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import "../style/feed.scss";
 
 import Post from "../components/Post";
 import LeftPanel from "../components/LeftPanel";
 import RightPanel from "../components/RightPanel";
+import PostSkeleton from "../components/PostSkeleton.jsx";
 
 import { usePost } from "../hooks/usePost";
-import { useProfile } from "../../profile/hooks/useProfile.jsx";
-
-import { useNavigate } from "react-router";
 import Navbar from "../../components/Navbar";
 
 const Feed = () => {
+    const [loadFailed, setLoadFailed] = useState(false);
     const {
         feed,
         loading,
         hendelFeed,
         hendelLike,
         hendeldisLike,
-        hendelGetMe,
-        setPost,
+        handelDeletePost,
+        handelToggleSave,
+        handelToggleReshare,
     } = usePost();
-
-    const { handleGetProfileByUsername } = useProfile();
-
-    const navigate = useNavigate();
-
     useEffect(() => {
-        const checkAuth = async () => {
-            const user = await hendelGetMe();
-
-            if (!user) {
-                navigate("/login");
-                return;
-            }
-
-            hendelFeed();
-        };
-
-        checkAuth();
-    }, []);
-
-    if (loading && feed.length === 0) {
-        return (
-            <main className="feed-loading">
-                <h1>Feed loading....</h1>
-            </main>
-        );
-    }
+        let active = true;
+        hendelFeed().then(success => {
+            if (active && !success) setLoadFailed(true);
+        });
+        return () => { active = false; };
+    }, [hendelFeed]);
 
     return (
         <>
@@ -55,13 +36,18 @@ const Feed = () => {
 
             <main className="contener">
 
-                <LeftPanel
-                   handleGetProfileByUsername={handleGetProfileByUsername}
-                   
-                   />
+                <LeftPanel />
 
                 <section className="feed-contener">
                     <div className="posts">
+                        {loading && feed.length === 0 && <><PostSkeleton /><PostSkeleton /></>}
+                        {loadFailed && <div className="feed-state" role="alert">
+                            <p>Your feed could not be loaded.</p>
+                            <button type="button" onClick={() => {
+                                setLoadFailed(false);
+                                hendelFeed().then(success => setLoadFailed(!success));
+                            }}>Try again</button>
+                        </div>}
                         {feed.map((post) => (
                             <Post
                                 key={post._id}
@@ -69,12 +55,19 @@ const Feed = () => {
                                 post={post}
                                 hendelLike={hendelLike}
                                 hendeldisLike={hendeldisLike}
-                                setPost={setPost}
-                                handleGetProfileByUsername={
-                                    handleGetProfileByUsername
-                                }
+                                onDeletePost={handelDeletePost}
+                                onToggleSave={handelToggleSave}
+                                onToggleReshare={handelToggleReshare}
                             />
                         ))}
+                        {!loading && !loadFailed && !feed.length && (
+                            <div className="feed-empty">
+                                <h1>Your feed starts here</h1>
+                                <p>Follow people to see what they share, or explore the latest public posts.</p>
+                                <Link to="/explore">Explore posts</Link>
+                                <Link to="/network">Find people to follow</Link>
+                            </div>
+                        )}
                     </div>
                 </section>
 

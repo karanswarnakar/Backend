@@ -1,36 +1,43 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, Navigate, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 const Register = () => {
 
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
 
   const navigate = useNavigate()
 
   const { user, loading, handelRegister } = useAuth()
-  if (user && !loading) {
-    return navigate("/")
-  }
 
   const submitHandler = async (e) => {
     e.preventDefault()
-    await handelRegister(username, email, password)
-    navigate("/")
+    setError("")
+    try {
+      await handelRegister(username, email, password)
+      navigate("/")
+    } catch (requestError) {
+      setError(requestError.response?.data?.message ?? "Could not create your account. Please try again.")
+    }
   }
 
+  if (user && !loading) {
+    return <Navigate to="/" replace />
+  }
 
   if (loading) {
-    return (<main>
+    return (<main className="auth-page">
       <h1 className='loading'>Loading.....</h1>
     </main>)
   }
 
   return (
-    <main>
+    <main className="auth-page">
       <div className="form-container">
         <h1>Register</h1>
+        {error && <p className="auth-error" role="alert">{error}</p>}
         <form onSubmit={submitHandler}>
 
           <input

@@ -15,10 +15,14 @@ app.use(cors({
 import authRouter from './routes/auth.route.js';
 import postRouter from './routes/post.route.js';
 import userRouter from './routes/user.route.js';
+import notificationRouter from './routes/notification.route.js';
+import messageRouter from './routes/message.route.js';
 
 /* Using Routes */
 app.use("/api/auth", authRouter)
 app.use("/api/posts", postRouter)
 app.use("/api/users", userRouter)
+app.use("/api/notifications", notificationRouter)
+app.use("/api/messages", messageRouter)
 
 export default app

@@ -7,6 +7,15 @@ import ProfilePage from "./features/profile/pages/ProfilePage.jsx";
 import EditProfile from "./features/profile/pages/EditProfile.jsx";
 import PageNotFound from "./features/components/PageNotFound.jsx";
 import Protected from "./features/components/Protected.jsx";
+import SavedPosts from "./features/post/pages/SavedPosts.jsx";
+import Onboarding from "./features/onboarding/Onboarding.jsx";
+import Network from "./features/post/pages/Network.jsx";
+import Explore from "./features/post/pages/Explore.jsx";
+import PostDetails from "./features/post/pages/PostDetails.jsx";
+import Messages from "./features/messages/Messages.jsx";
+import NotificationsPage from "./features/notifications/NotificationsPage.jsx";
+import LegalPage from "./features/components/LegalPage.jsx";
+import SettingsPage from "./features/settings/SettingsPage.jsx";
 
 
 export const router = createBrowserRouter([
@@ -23,12 +32,56 @@ export const router = createBrowserRouter([
         element: <Protected><Feed /></Protected>
     },
     {
+        path: "/onboarding",
+        element: <Protected><Onboarding /></Protected>
+    },
+    {
         path: "/create-post",
         element: <Protected><CreatePost/></Protected>
     },
     {
+        path: "/saved",
+        element: <Protected><SavedPosts /></Protected>
+    },
+    {
+        path: "/network",
+        element: <Protected><Network /></Protected>
+    },
+    {
+        path: "/explore",
+        element: <Explore />
+    },
+    {
+        path: "/post/:postId",
+        element: <PostDetails />
+    },
+    {
+        path: "/messages",
+        element: <Protected><Messages /></Protected>
+    },
+    {
+        path: "/settings",
+        element: <Protected><SettingsPage /></Protected>
+    },
+    {
+        path: "/notifications",
+        element: <Protected><NotificationsPage /></Protected>
+    },
+    {
         path: "/profile",
         element: <Protected><ProfilePage/></Protected>
+    },
+    {
+        path: "/profile/:username",
+        element: <ProfilePage/>
+    },
+    {
+        path: "/privacy",
+        element: <LegalPage page="privacy" />
+    },
+    {
+        path: "/cookies",
+        element: <LegalPage page="cookies" />
     },
     {
         path: "/profile/edit",

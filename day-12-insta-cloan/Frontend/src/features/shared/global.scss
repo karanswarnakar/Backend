@@ -12,9 +12,14 @@ html,
 body,
 #root {
   width: 100%;
-  // min-height: 100vh;
+  min-height: 100%;
   background-color: var(--bg-primary);
   color: var(--color-primary);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+body {
+  min-height: 100vh;
 }
 
 /* width */

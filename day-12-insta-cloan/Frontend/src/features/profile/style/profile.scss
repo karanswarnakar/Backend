@@ -13,6 +13,21 @@
         border-bottom: 1px solid var(--border-primary);
     }
 
+    .profile__private,
+    .profile__state {
+        width: min(100% - 2rem, 640px);
+        margin: var(--m-xl) auto;
+        padding: var(--p-2xl);
+        color: var(--color-primary);
+        background: var(--bg-card);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        text-align: center;
+
+        h2 { margin: 0; font-size: var(--fs-lg); }
+        p { color: var(--color-secondary); font-size: var(--fs-sm); line-height: 1.5; }
+    }
+
     &__top {
         display: flex;
         align-items: flex-start;
@@ -250,14 +265,36 @@
         }
     }
 
+    &__tab-state {
+        width: 100%;
+        padding: var(--p-2xl);
+        color: var(--color-secondary);
+        background: var(--bg-card);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        font-size: var(--fs-sm);
+        text-align: center;
+
+        button {
+            margin-top: var(--m-sm);
+            padding: .55rem .9rem;
+            color: var(--white);
+            background: var(--color-brand);
+            border: 0;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+        }
+    }
+
     /* ================= POSTS ================= */
 
     &__posts {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 3px;
-
-        background: var(--bg-primary);
+        width: min(100%, 600px);
+        display: flex;
+        flex-direction: column;
+        gap: var(--m-md);
+        margin: 0 auto;
+        padding: var(--p-md);
     }
 
     &__post {
@@ -277,6 +314,29 @@
             object-fit: cover;
 
             transition: transform var(--transition-slow);
+        }
+
+        .follow-requests-dialog {
+            .follow-request {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+                padding: .75rem 0;
+                border-bottom: 1px solid var(--border-primary);
+
+                span {
+                    flex: 1;
+                }
+
+                button {
+                    padding: .4rem .65rem;
+                    color: var(--color-primary);
+                    background: var(--bg-secondary);
+                    border: 1px solid var(--border-primary);
+                    border-radius: var(--radius-sm);
+                    cursor: pointer;
+                }
+            }
         }
 
         &:hover {

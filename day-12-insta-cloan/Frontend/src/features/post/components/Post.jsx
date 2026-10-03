@@ -1,96 +1,264 @@
-import React from 'react'
-import { useNavigate } from 'react-router'
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../../auth/hooks/useAuth.js";
+import { timeAgo } from "../../shared/timeAgo.js";
 
-const Post = ({ user, post, hendelLike, hendeldisLike,handleGetProfileByUsername }) => {
-    const navigate = useNavigate()
+const Icon = ({ children }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+        {children}
+    </svg>
+);
 
-    const profileHandler = async ({ username }) => {
-        await handleGetProfileByUsername({username})
-        navigate("/profile")
-    }
+const Post = ({
+    user,
+    post,
+    hendelLike,
+    hendeldisLike,
+    onDeletePost,
+    onToggleSave,
+    onToggleReshare,
+    canInteract
+}) => {
+    const navigate = useNavigate();
+    const { user: currentUser } = useAuth();
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [showHeart, setShowHeart] = useState(false);
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [reshareLoading, setReshareLoading] = useState(false);
+    const [actionMessage, setActionMessage] = useState("");
+    const menuRef = useRef(null);
+    const lastTap = useRef(0);
+    const singleTapTimer = useRef(null);
+    const heartTimer = useRef(null);
+    const isOwner = currentUser?.username === user?.username;
+    const canAct = canInteract ?? Boolean(currentUser);
+
+    useEffect(() => {
+        const closeMenu = event => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) setMenuOpen(false);
+        };
+        const closeOnEscape = event => {
+            if (event.key === "Escape") {
+                setMenuOpen(false);
+                setConfirmDelete(false);
+            }
+        };
+        document.addEventListener("mousedown", closeMenu);
+        document.addEventListener("keydown", closeOnEscape);
+        return () => {
+            document.removeEventListener("mousedown", closeMenu);
+            document.removeEventListener("keydown", closeOnEscape);
+            window.clearTimeout(singleTapTimer.current);
+            window.clearTimeout(heartTimer.current);
+        };
+    }, []);
+
+    const goToDetails = () => navigate(`/post/${post._id}`);
+
+    const showLikeAnimation = () => {
+        setShowHeart(true);
+        window.clearTimeout(heartTimer.current);
+        heartTimer.current = window.setTimeout(() => setShowHeart(false), 820);
+    };
+
+    const handleImageClick = () => {
+        const now = Date.now();
+        if (now - lastTap.current < 330) {
+            lastTap.current = 0;
+            window.clearTimeout(singleTapTimer.current);
+            if (canAct) {
+                if (!post.isLiked) hendelLike(post._id);
+                showLikeAnimation();
+            } else {
+                goToDetails();
+            }
+            return;
+        }
+        lastTap.current = now;
+        singleTapTimer.current = window.setTimeout(goToDetails, 330);
+    };
+
+    const sharePost = async () => {
+        const url = `${window.location.origin}/post/${post._id}`;
+        try {
+            if (navigator.share) {
+                await navigator.share({ title: `Post by @${user?.username}`, url });
+            } else {
+                await navigator.clipboard.writeText(url);
+                setActionMessage("Link copied");
+                window.setTimeout(() => setActionMessage(""), 1800);
+            }
+        } catch (error) {
+            if (error.name !== "AbortError") {
+                console.error("Failed to share post:", error);
+                setActionMessage("Could not share link");
+                window.setTimeout(() => setActionMessage(""), 1800);
+            }
+        }
+    };
+
+    const comment = () => navigate(`/post/${post._id}#comments`);
 
     return (
-        <div className='post'>
+        <article className="post">
             <div className="top">
-                <a
-                    onClick={() => {
-                        profileHandler({username: user.username})
-                    }}
-                >
-                    <div className="user">
-                        <img src={user.profileImage} alt="!image" className='userImage' />
-
-                        <div className="user-data">
-                            <h2>{user.username} <span className="verified">
-                                <img
-                                    src="https://ik.imagekit.io/icuoatuu2/transparent.png"
-                                    alt="Verified"
-
-                                />
-                            </span></h2>
-                            <p>@{user.username} <span>. 2h</span></p>
+                <Link to={`/profile/${encodeURIComponent(user?.username || "")}`} className="post__author">
+                    <img
+                        src={user?.profileImage || "https://ik.imagekit.io/a2vhcigch/default-dp.png"}
+                        alt=""
+                        className="userImage"
+                    />
+                    <span className="user-data">
+                        <strong>{user?.username || "Unknown user"}</strong>
+                        <span>@{user?.username || "unknown"} · {timeAgo(post.createdAt)}</span>
+                    </span>
+                </Link>
+                <div className="post-menu" ref={menuRef}>
+                    <button
+                        type="button"
+                        aria-label="Post options"
+                        aria-expanded={menuOpen}
+                        onClick={() => setMenuOpen(open => !open)}
+                    >
+                        <Icon><circle cx="5" cy="12" r="1.4" fill="currentColor" /><circle cx="12" cy="12" r="1.4" fill="currentColor" /><circle cx="19" cy="12" r="1.4" fill="currentColor" /></Icon>
+                    </button>
+                    {menuOpen && (
+                        <div className="post-menu__items" role="menu">
+                            <button type="button" role="menuitem" onClick={() => { setMenuOpen(false); goToDetails(); }}>
+                                View post details
+                            </button>
+                            <button type="button" role="menuitem" onClick={() => { setMenuOpen(false); sharePost(); }}>
+                                Share post link
+                            </button>
+                            {isOwner && (
+                                <button
+                                    type="button"
+                                    role="menuitem"
+                                    className="post-menu__delete"
+                                    onClick={() => { setMenuOpen(false); setConfirmDelete(true); }}
+                                >
+                                    Delete post
+                                </button>
+                            )}
                         </div>
-                    </div>
-                </a>
-                <button type='button'>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5 10C3.9 10 3 10.9 3 12C3 13.1 3.9 14 5 14C6.1 14 7 13.1 7 12C7 10.9 6.1 10 5 10ZM19 10C17.9 10 17 10.9 17 12C17 13.1 17.9 14 19 14C20.1 14 21 13.1 21 12C21 10.9 20.1 10 19 10ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z"></path></svg>
-                </button>
+                    )}
+                </div>
             </div>
-            <div className="image-contener">
-                <img src={post.postImage} alt="postimage" className='post-image' />
 
-            </div>
+            <button
+                type="button"
+                className="post-image-wrap"
+                aria-label={`Open post by ${user?.username}`}
+                onClick={handleImageClick}
+                onContextMenu={event => event.preventDefault()}
+            >
+                <img src={post.postImage} alt={post.caption || `Post by ${user?.username}`} className="post-image" />
+                {showHeart && <span className="post-double-heart" aria-hidden="true">♥</span>}
+            </button>
+
             <div className="icons">
                 <div className="icon_set_1">
                     <div className={post.isLiked ? "liked" : "notLiked"}>
                         <button
-                            onClick={() => {
-                                post.isLiked ? hendeldisLike(post._id) : hendelLike(post._id)
-                            }}
+                            type="button"
+                            aria-label={post.isLiked ? "Unlike post" : "Like post"}
+                            disabled={!canAct}
+                            onClick={() => post.isLiked ? hendeldisLike(post._id) : hendelLike(post._id)}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={post.isLiked ? "#ff0000" : "#fff"}><path d={post.isLiked ? "M12.001 4.52853C14.35 2.42 17.98 2.49 20.2426 4.75736C22.5053 7.02472 22.583 10.637 20.4786 12.993L11.9999 21.485L3.52138 12.993C1.41705 10.637 1.49571 7.01901 3.75736 4.75736C6.02157 2.49315 9.64519 2.41687 12.001 4.52853Z" : "M12.001 4.52853C14.35 2.42 17.98 2.49 20.2426 4.75736C22.5053 7.02472 22.583 10.637 20.4786 12.993L11.9999 21.485L3.52138 12.993C1.41705 10.637 1.49571 7.01901 3.75736 4.75736C6.02157 2.49315 9.64519 2.41687 12.001 4.52853ZM18.827 6.1701C17.3279 4.66794 14.9076 4.60701 13.337 6.01687L12.0019 7.21524L10.6661 6.01781C9.09098 4.60597 6.67506 4.66808 5.17157 6.17157C3.68183 7.66131 3.60704 10.0473 4.97993 11.6232L11.9999 18.6543L19.0201 11.6232C20.3935 10.0467 20.319 7.66525 18.827 6.1701Z"}></path></svg>
+                            <Icon>
+                                <path
+                                    d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"
+                                    fill={post.isLiked ? "currentColor" : "none"}
+                                    stroke={post.isLiked ? "#ff4c66" : "currentColor"}
+                                />
+                            </Icon>
                         </button>
-                        <span>40k</span>
+                        <span>{post.likes ?? 0}</span>
                     </div>
                     <div className="comment">
-                        <button>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 3H14C18.4183 3 22 6.58172 22 11C22 15.4183 18.4183 19 14 19V22.5C9 20.5 2 17.5 2 11C2 6.58172 5.58172 3 10 3ZM12 17H14C17.3137 17 20 14.3137 20 11C20 7.68629 17.3137 5 14 5H10C6.68629 5 4 7.68629 4 11C4 14.61 6.46208 16.9656 12 19.4798V17Z"></path></svg>
+                        <button type="button" aria-label="View comments" onClick={comment}>
+                            <Icon><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" /></Icon>
                         </button>
-                        <span>4k</span>
+                        <span>{post.commentCount ?? 0}</span>
                     </div>
-                    <div className="share">
-                        <button>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5.46257 4.43262C7.21556 2.91688 9.5007 2 12 2C17.5228 2 22 6.47715 22 12C22 14.1361 21.3302 16.1158 20.1892 17.7406L17 12H20C20 7.58172 16.4183 4 12 4C9.84982 4 7.89777 4.84827 6.46023 6.22842L5.46257 4.43262ZM18.5374 19.5674C16.7844 21.0831 14.4993 22 12 22C6.47715 22 2 17.5228 2 12C2 9.86386 2.66979 7.88416 3.8108 6.25944L7 12H4C4 16.4183 7.58172 20 12 20C14.1502 20 16.1022 19.1517 17.5398 17.7716L18.5374 19.5674Z"></path></svg>
+                    <div className={`reshare${post.isReshared ? " is-reshared" : ""}`}>
+                        <button
+                            type="button"
+                            aria-label={post.isReshared ? "Undo reshare" : "Reshare post"}
+                            disabled={!canAct || reshareLoading}
+                            onClick={async () => {
+                                if (!onToggleReshare || !canAct) return;
+                                setReshareLoading(true);
+                                try {
+                                    await onToggleReshare(post._id);
+                                } finally {
+                                    setReshareLoading(false);
+                                }
+                            }}
+                        >
+                            <Icon><path d="M17 1l4 4-4 4V6H8a4 4 0 0 0-4 4v1H2v-1a6 6 0 0 1 6-6h9V1ZM7 23l-4-4 4-4v3h9a4 4 0 0 0 4-4v-1h2v1a6 6 0 0 1-6 6H7v3Z" /></Icon>
                         </button>
-                        <span>10</span>
-                    </div>
-                    <div className="reshare">
-                        <button>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13 14H11C7.54202 14 4.53953 15.9502 3.03239 18.8107C3.01093 18.5433 3 18.2729 3 18C3 12.4772 7.47715 8 13 8V2.5L23.5 11L13 19.5V14ZM11 12H15V15.3078L20.3214 11L15 6.69224V10H13C10.5795 10 8.41011 11.0749 6.94312 12.7735C8.20873 12.2714 9.58041 12 11 12Z"></path></svg>
-                        </button>
-                        <span>1M</span>
+                        <span>{post.reshareCount ?? 0}</span>
                     </div>
                 </div>
-                <button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5 2H19C19.5523 2 20 2.44772 20 3V22.1433C20 22.4194 19.7761 22.6434 19.5 22.6434C19.4061 22.6434 19.314 22.6168 19.2344 22.5669L12 18.0313L4.76559 22.5669C4.53163 22.7136 4.22306 22.6429 4.07637 22.4089C4.02647 22.3293 4 22.2373 4 22.1433V3C4 2.44772 4.44772 2 5 2ZM18 4H6V19.4324L12 15.6707L18 19.4324V4Z"></path></svg></button>
-
+                <button
+                    type="button"
+                    className={`post__bookmark ${post.isSaved ? "post__bookmark--saved" : ""}`}
+                    aria-label={post.isSaved ? "Remove bookmark" : "Save bookmark"}
+                    aria-pressed={Boolean(post.isSaved)}
+                    title={post.isSaved ? "Remove bookmark" : "Save to bookmarks"}
+                    disabled={!canAct || saveLoading}
+                    onClick={async () => {
+                        if (!onToggleSave || !canAct || saveLoading) return;
+                        setSaveLoading(true);
+                        try {
+                            await onToggleSave(post._id, Boolean(post.isSaved));
+                        } finally {
+                            setSaveLoading(false);
+                        }
+                    }}
+                >
+                    <Icon><path d="M5 3.5A1.5 1.5 0 0 1 6.5 2h11A1.5 1.5 0 0 1 19 3.5V22l-6.5-4L6 22V3.5Z" fill={post.isSaved ? "currentColor" : "none"} /></Icon>
+                </button>
             </div>
 
             <p className="caption">
-                <b>
-                    <span className="username">
-                        @{user.username}
-                        <span className="verified">
-                            <img
-                                src="https://ik.imagekit.io/icuoatuu2/transparent.png"
-                                alt="Verified"
-                            />
-                        </span>
-                    </span>
-                </b>{" "}
+                <Link className="username" to={`/profile/${encodeURIComponent(user?.username || "")}`}>
+                    @{user?.username || "unknown"}
+                </Link>{" "}
                 {post.caption}
             </p>
-        </div>
-    )
-}
+            {actionMessage && <span className="post__feedback" role="status">{actionMessage}</span>}
 
-export default Post
+            {confirmDelete && (
+                <div className="post-dialog-backdrop" onClick={() => setConfirmDelete(false)}>
+                    <section
+                        className="post-dialog"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby={`delete-post-${post._id}`}
+                        onClick={event => event.stopPropagation()}
+                    >
+                        <h2 id={`delete-post-${post._id}`}>Delete this post?</h2>
+                        <p>This action cannot be undone.</p>
+                        <div className="post-dialog__actions">
+                            <button type="button" onClick={() => setConfirmDelete(false)}>Cancel</button>
+                            <button
+                                type="button"
+                                className="post-menu__delete"
+                                onClick={async () => {
+                                    if (await onDeletePost(post._id)) setConfirmDelete(false);
+                                }}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            )}
+        </article>
+    );
+};
+
+export default Post;

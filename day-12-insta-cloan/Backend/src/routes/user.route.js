@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import userController from '../controllers/user.controller.js';
-import identifyUser from '../middlewares/auth.middleware.js';
+import identifyUser, { optionalIdentifyUser } from '../middlewares/auth.middleware.js';
 
 const userRouter = Router()
 
@@ -43,13 +43,22 @@ userRouter.patch("/update/status/rejected/:username", identifyUser, userControll
  */
 userRouter.get("/status/pending/:username", identifyUser, userController.userPendingFollower)
 
+/**
+ * @route GET - /api/users/suggestions
+ * @description Get daily ranked follow suggestions for the authenticated user
+ * @access protected
+ */
+userRouter.get("/suggestions", identifyUser, userController.getFollowSuggestions)
+userRouter.get("/search", optionalIdentifyUser, userController.searchProfiles)
+userRouter.patch("/me/privacy", identifyUser, userController.updatePrivacy)
+
 
 /** * 
  * @route GET - /api/users/:userId
  * @description get user by userId
  * @access protected 
  */
-userRouter.get("/:username", identifyUser, userController.getUserByUsername)
+userRouter.get("/profile/:username", optionalIdentifyUser, userController.getUserByUsername)
 
 
 

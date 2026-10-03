@@ -1,39 +1,44 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from "react-router"
+import { Link, Navigate, useNavigate } from "react-router"
 import "../style/form.scss"
 import { useAuth } from '../hooks/useAuth'
 const Login = () => {
 
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
 
   const navigate = useNavigate()
 
   const { user, loading, handelLogin } = useAuth()
 
- 
-  if(user && !loading){
-    return navigate("/")
-  }
-
   const submitHandler = async (e) => {
     e.preventDefault()
-    await handelLogin(username, password)
-    .then(()=>{
+    setError("")
+    try {
+      await handelLogin(username, password)
       navigate("/")
-    })
+    } catch (requestError) {
+      setError(requestError.response?.data?.message ?? "Could not log in. Please try again.")
+    }
   }
+
+  if (user && !loading) {
+    return <Navigate to="/" replace />
+  }
+
  if (loading) {
     return (
-      <main>
+      <main className="auth-page">
         <h1 className='loading'>loading...</h1>
       </main>
     )
   }
   return (
-    <main>
+    <main className="auth-page">
       <div className="form-container">
         <h1>Login</h1>
+        {error && <p className="auth-error" role="alert">{error}</p>}
         <form onSubmit={submitHandler}>
 
           <input

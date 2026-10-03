@@ -1,0 +1,79 @@
+.notifications-page {
+    width: min(100% - 2rem, 620px);
+    margin: var(--m-2xl) auto;
+    color: var(--color-primary);
+    font-family: var(--ubuntu);
+
+    header {
+        margin-bottom: var(--m-lg);
+        h1 { margin: 0; font-size: var(--fs-2xl); }
+        p { margin: .35rem 0 0; color: var(--color-secondary); font-size: var(--fs-sm); }
+    }
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: var(--bg-card);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        list-style: none;
+
+        li + li { border-top: 1px solid var(--border-primary); }
+
+        li.is-unread { background: #6366f114; }
+
+        button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: var(--p-sm);
+            padding: var(--p-md);
+            color: inherit;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+            text-align: left;
+
+            &:hover { background: var(--bg-hover); }
+
+            > img:first-child {
+                width: 2.75rem;
+                height: 2.75rem;
+                flex-shrink: 0;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            > span {
+                min-width: 0;
+                display: flex;
+                flex: 1;
+                flex-direction: column;
+                gap: .3rem;
+            }
+
+            strong { font-size: var(--fs-sm); font-weight: var(--fw-regular); }
+            small { color: var(--color-muted); font-size: var(--fs-xs); }
+        }
+
+        .notifications-page__post {
+            width: 3rem;
+            height: 3rem;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+        }
+    }
+
+    &__empty {
+        padding: var(--p-xl);
+        color: var(--color-secondary);
+        text-align: center;
+    }
+
+    &__error { color: var(--color-danger); }
+    footer { margin-top: var(--m-md); text-align: center; }
+    footer a { color: var(--color-secondary); font-size: var(--fs-sm); }
+}

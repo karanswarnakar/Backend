@@ -28,6 +28,13 @@ authRouter.post("/login", authController.login)
  */
 authRouter.get("/get-me", identifyUser, authController.getMe)
 
+/**
+ * @route PATCH /api/auth/onboarding
+ * @description Save onboarding responses and mark onboarding complete.
+ * @access protected
+ */
+authRouter.patch("/onboarding", identifyUser, authController.saveOnboarding)
+
 /** *
 * @route POST - api/auth/logout 
 * @description  Logout a user and remove token from cookie and return success message

@@ -1,7 +1,7 @@
 import express from 'express';
 
 import postController from '../controllers/post.controller.js'
-import identifyUser from '../middlewares/auth.middleware.js'
+import identifyUser, { optionalIdentifyUser } from '../middlewares/auth.middleware.js'
 import multer from 'multer'
 
 const postRouter = express.Router()
@@ -26,32 +26,68 @@ postRouter.post("/",identifyUser,uplode.single("postImage"),postController.creat
  */
 postRouter.get("/",identifyUser,postController.getPostOfUser)
 
-/** * 
- * @route GET - /api/posts/details/:postId 
- * @description Get post details by postId and check if the user is authorized to view the post
+/**
+ * @route GET /api/posts/details/:postId
+ * @description Get a post owned by the authenticated user.
  * @access protected
  */
 postRouter.get("/details/:postId", identifyUser, postController.getPostDetailsById)
 
-/** * 
- * @route GET - /api/posts/like/:postId 
- * @description Like a post by postId and check if the user has already liked the post 
+postRouter.get("/explore", optionalIdentifyUser, postController.getExplorePosts)
+postRouter.get("/public/:postId", optionalIdentifyUser, postController.getPostDetailsById)
+postRouter.get("/profile/:username/reshares", optionalIdentifyUser, postController.getProfileReshares)
+postRouter.get("/:postId/comments", optionalIdentifyUser, postController.getComments)
+postRouter.post("/:postId/comments", identifyUser, postController.createComment)
+postRouter.delete("/comments/:commentId", identifyUser, postController.deleteComment)
+postRouter.post("/:postId/reshare", identifyUser, postController.toggleReshare)
+
+/**
+ * @route DELETE /api/posts/:postId
+ * @description Delete an owned post and its likes and saved references.
+ * @access protected
+ */
+postRouter.delete("/:postId", identifyUser, postController.deletePost)
+
+/**
+ * @route GET /api/posts/saved
+ * @description List posts saved by the authenticated user.
+ * @access protected
+ */
+postRouter.get("/saved", identifyUser, postController.getSavedPosts)
+
+/**
+ * @route POST /api/posts/:postId/save
+ * @description Save a post for the authenticated user.
+ * @access protected
+ */
+postRouter.post("/:postId/save", identifyUser, postController.savePost)
+
+/**
+ * @route DELETE /api/posts/:postId/save
+ * @description Remove a post from the authenticated user's saved posts.
+ * @access protected
+ */
+postRouter.delete("/:postId/save", identifyUser, postController.unsavePost)
+
+/**
+ * @route POST /api/posts/like/:postId
+ * @description Like a post.
  * @access protected
  */
 postRouter.post("/like/:postId", identifyUser, postController.likeByPostId)
 
 
-/** * 
- * @route GET - /api/posts/dislike/:postId 
- * @description Unlike a post by postId and check if the user has already liked the post  
+/**
+ * @route POST /api/posts/dislike/:postId
+ * @description Remove the authenticated user's like from a post.
  * @access protected
  */
-postRouter.post("/feed", identifyUser, postController.disLikeByPostId)
+postRouter.post("/dislike/:postId", identifyUser, postController.disLikeByPostId)
 
 
-/** * 
- * @route GET - /api/posts/feed 
- * @description Get the feed of the user and check if the user is authorized to view the feed 
+/**
+ * @route GET /api/posts/feed
+ * @description Get the feed with like and saved-post state for the authenticated user.
  * @access protected
  */
 postRouter.get("/feed", identifyUser, postController.getFeed)

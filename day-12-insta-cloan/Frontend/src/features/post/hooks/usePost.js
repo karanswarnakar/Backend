@@ -3,59 +3,50 @@ import {
     like,
     dislike,
     createPost,
-    getMe
+    deletePost,
+    savePost,
+    unsavePost,
+    togglePostReshare
 } from "../services/post.api";
 
 import { PostContext } from "../post.context";
-import { useContext } from "react";
-import { useNavigate } from "react-router";
+import { useCallback, useContext } from "react";
+import { ProfileContext } from "../../profile/profile.context.jsx";
 
 export const usePost = () => {
+
     const context = useContext(PostContext);
-    const navigete = useNavigate()
+    const { setProfile } = useContext(ProfileContext);
+
     const {
         feed,
         setFeed,
         loading,
-        setLoading,
-        user,
-        setUser
+        setLoading
     } = context;
 
- async function hendelGetMe() {
-    setLoading(true);
+    const updateProfilePosts = (updatePosts) => {
+        setProfile(current => current
+            ? { ...current, posts: updatePosts(current.posts ?? []) }
+            : current
+        );
+    };
 
-    try {
-        const data = await getMe();
-
-        if (!data) {
-            setUser(null);
-            return null;
-        }
-
-        setUser(data.user);
-        return data.user;
-
-    } catch (error) {
-        console.log(error);
-        return null;
-    } finally {
-        setLoading(false);
-    }
-}
-    async function hendelFeed() {
+    const hendelFeed = useCallback(async () => {
         setLoading(true);
 
         try {
             const res = await getFeed();
 
-            setFeed(res.posts.reverse());
+            setFeed(res.posts);
+            return true;
         } catch (error) {
             console.log(error);
+            return false;
         } finally {
             setLoading(false);
         }
-    }
+    }, [setFeed, setLoading]);
 
 
     async function hendelLike(postId) {
@@ -68,11 +59,16 @@ export const usePost = () => {
                         ? {
                             ...post,
                             isLiked: true,
-                            likes: post.likes + 1
+                            likes: (post.likes ?? 0) + 1
                         }
                         : post
                 )
             );
+            updateProfilePosts(posts => posts.map(post =>
+                post._id === postId
+                    ? { ...post, isLiked: true, likes: (post.likes ?? 0) + 1 }
+                    : post
+            ));
         } catch (error) {
             console.log(error);
         }
@@ -89,13 +85,70 @@ export const usePost = () => {
                         ? {
                             ...post,
                             isLiked: false,
-                            likes: post.likes - 1
+                            likes: Math.max(0, (post.likes ?? 0) - 1)
                         }
                         : post
                 )
             );
+            updateProfilePosts(posts => posts.map(post =>
+                post._id === postId
+                    ? { ...post, isLiked: false, likes: Math.max(0, (post.likes ?? 0) - 1) }
+                    : post
+            ));
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    async function handelDeletePost(postId) {
+        try {
+            await deletePost(postId);
+            setFeed(posts => posts.filter(post => post._id !== postId));
+            updateProfilePosts(posts => posts.filter(post => post._id !== postId));
+            return true;
+        } catch (error) {
+            console.error("Failed to delete post:", error);
+            return false;
+        }
+    }
+
+    async function handelToggleSave(postId, isSaved) {
+        try {
+            if (isSaved) {
+                await unsavePost(postId);
+            } else {
+                await savePost(postId);
+            }
+            const nextIsSaved = !isSaved;
+            setFeed(posts => posts.map(post =>
+                post._id === postId ? { ...post, isSaved: nextIsSaved } : post
+            ));
+            updateProfilePosts(posts => posts.map(post =>
+                post._id === postId ? { ...post, isSaved: nextIsSaved } : post
+            ));
+            return true;
+        } catch (error) {
+            console.error("Failed to update saved post:", error);
+            return false;
+        }
+    }
+
+    async function handelToggleReshare(postId) {
+        try {
+            const result = await togglePostReshare(postId);
+            const update = post => post._id === postId
+                ? {
+                    ...post,
+                    isReshared: result.isReshared,
+                    reshareCount: Math.max(0, (post.reshareCount ?? 0) + (result.isReshared ? 1 : -1))
+                }
+                : post;
+            setFeed(posts => posts.map(update));
+            updateProfilePosts(posts => posts.map(update));
+            return result.isReshared;
+        } catch (error) {
+            console.error("Failed to reshare post:", error);
+            return false;
         }
     }
 
@@ -120,17 +173,15 @@ export const usePost = () => {
         }
     }
 
-
-
     return {
         feed,
         loading,
-        user,
-
         hendelFeed,
         hendelLike,
         hendeldisLike,
-        handelCreatePost,
-        hendelGetMe
+        handelDeletePost,
+        handelToggleSave,
+        handelToggleReshare,
+        handelCreatePost
     };
 };

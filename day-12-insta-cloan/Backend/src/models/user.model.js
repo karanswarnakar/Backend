@@ -1,5 +1,26 @@
 import mongoose from 'mongoose';
 
+const onboardingSchema = new mongoose.Schema({
+    completed: {
+        type: Boolean,
+        default: false
+    },
+    discoverySource: {
+        type: String,
+        default: ""
+    },
+    goals: {
+        type: [String],
+        default: []
+    },
+    interests: {
+        type: [String],
+        default: []
+    }
+}, {
+    _id: false
+});
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -19,6 +40,14 @@ const userSchema = new mongoose.Schema({
     profileImage: {
         type: String,
         default: "https://ik.imagekit.io/a2vhcigch/default-dp.png"
+    },
+    isPrivate: {
+        type: Boolean,
+        default: false
+    },
+    onboarding: {
+        type: onboardingSchema,
+        default: () => ({})
     }
 }, {
     timestamps: true,

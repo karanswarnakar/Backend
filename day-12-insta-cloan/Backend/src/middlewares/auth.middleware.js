@@ -1,37 +1,41 @@
 import jwt from 'jsonwebtoken';
 import BlacklistModel from '../models/blacklist.model.js';
 
-async function identifyUser(req,res,next) {
+async function authenticate(req) {
     const token = req.cookies.token
 
     if(!token){
-        return res.status(401).json({
-            message: "Token is not authorized"
-        })
+        return null
     }
 
     const isTokenBlacklisted = await BlacklistModel.findOne({
         token
     })
     if(isTokenBlacklisted){
-        return res.status(401).json({
-            message: "Token is not authorized"
-        })
+        return null
     }
     try{
-        
-        const decode = jwt.verify(token, process.env.JWT_SECRET)
-        req.user = decode
-        next()
+        return jwt.verify(token, process.env.JWT_SECRET)
+    } catch {
+        return null
+    }
+}
 
-    }catch(err){
+async function identifyUser(req,res,next) {
+    const user = await authenticate(req)
+    if (!user) {
         return res.status(401).json({
-            message: "User is unauthorize"
+            message: "User is unauthorized"
         })
     }
 
-    
+    req.user = user
+    next()
+}
 
+export async function optionalIdentifyUser(req, _res, next) {
+    req.user = await authenticate(req)
+    next()
 }
 
 export default identifyUser
