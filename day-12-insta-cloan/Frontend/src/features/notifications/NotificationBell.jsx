@@ -14,9 +14,10 @@ const notificationText = notification => {
         like: "liked your post.",
         comment: `commented: “${notification.message || ""}”`,
         reshare: "reshared your post.",
-        message: `sent you a message: “${notification.message || ""}”`
+        message: `sent you a message: “${notification.message || ""}”`,
+        privacy_update: `changed your account privacy to ${notification.message}.`
     }[notification.type] || "interacted with you.";
-    return `${actor} ${text}`;
+    return notification.type === "privacy_update" ? `You ${text}` : `${actor} ${text}`;
 };
 
 const NotificationBell = () => {
@@ -111,6 +112,7 @@ const NotificationBell = () => {
                                     onClick={() => {
                                         setOpen(false);
                                         if (item.type === "message") navigate("/messages");
+                                        else if (item.type === "privacy_update") navigate("/settings");
                                         else if (item.post?._id) navigate(`/post/${item.post._id}`);
                                         else if (item.actor?.username) navigate(`/profile/${encodeURIComponent(item.actor.username)}`);
                                     }}

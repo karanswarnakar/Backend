@@ -68,7 +68,11 @@ const Navbar = () => {
                             {isMenuOpen && (
                                 <div className="navbar__menu">
                                     <Link to={`/profile/${encodeURIComponent(user.username)}`} onClick={() => setIsMenuOpen(false)}>
-                                        <span>👤</span> Profile
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                                            <circle cx="12" cy="8" r="4" />
+                                            <path d="M4 21a8 8 0 0 1 16 0" />
+                                        </svg>
+                                        <span>Profile</span>
                                     </Link>
                                     <div className="navbar__menu-divider" />
                                     <button
@@ -79,7 +83,11 @@ const Navbar = () => {
                                             setIsMenuOpen(false);
                                         }}
                                     >
-                                        <span>↪</span> Log out
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                                            <path d="M10 17l5-5-5-5M15 12H3" />
+                                            <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" />
+                                        </svg>
+                                        <span>Log out</span>
                                     </button>
                                 </div>
                             )}

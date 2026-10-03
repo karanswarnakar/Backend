@@ -5,10 +5,10 @@ const api = axios.create({
     withCredentials: true
 })
 
-export async function getFeed() {
-    const response = await api.get("/api/posts/feed")
-    
-   
+export async function getFeed(cursor) {
+    const response = await api.get("/api/posts/feed", {
+        params: cursor ? { cursor } : {}
+    })
     return response.data
 }
 

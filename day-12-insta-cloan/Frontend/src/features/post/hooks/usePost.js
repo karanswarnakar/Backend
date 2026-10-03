@@ -32,17 +32,20 @@ export const usePost = () => {
         );
     };
 
-    const hendelFeed = useCallback(async () => {
+    const hendelFeed = useCallback(async (cursor = null) => {
         setLoading(true);
 
         try {
-            const res = await getFeed();
-
-            setFeed(res.posts);
-            return true;
+            const res = await getFeed(cursor);
+            setFeed(current => {
+                if (!cursor) return res.posts;
+                const existingIds = new Set(current.map(post => post._id));
+                return [...current, ...res.posts.filter(post => !existingIds.has(post._id))];
+            });
+            return res;
         } catch (error) {
-            console.log(error);
-            return false;
+            console.error("Failed to load feed:", error);
+            return null;
         } finally {
             setLoading(false);
         }

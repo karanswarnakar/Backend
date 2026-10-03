@@ -356,25 +356,36 @@ async function disLikeByPostId(req, res) {
 
 
 async function getFeed(req, res) {
-
     const user = req.user
     const accepted = await FollowModel.find({ follower: user.username, status: "accepted" })
         .select("followee").lean()
     const visibleUsernames = [user.username, ...accepted.map(({ followee }) => followee)]
-    const posts = await PostModel.find()
-        .populate({
-            path: "user",
-            select: "username profileImage isPrivate",
-            match: { $or: [{ isPrivate: { $ne: true } }, { username: { $in: visibleUsernames } }] }
-        })
-        .sort({ createdAt: -1, _id: -1 })
-        .limit(30)
+    const { cursor } = req.query
+    if (cursor && !mongoose.isValidObjectId(cursor)) {
+        return res.status(400).json({ message: "Invalid feed cursor" })
+    }
+
+    const visibleUsers = await UserModel.find({
+        $or: [
+            { isPrivate: { $ne: true } },
+            { username: { $in: visibleUsernames } }
+        ]
+    }).select("_id").lean()
+    const filter = { user: { $in: visibleUsers.map(({ _id }) => _id) } }
+    if (cursor) filter._id = { $lt: new mongoose.Types.ObjectId(cursor) }
+    const page = await PostModel.find(filter)
+        .populate({ path: "user", select: "username profileImage isPrivate" })
+        .sort({ _id: -1 })
+        .limit(13)
         .lean()
-    const viewablePosts = posts.filter(post => post.user)
+    const hasMore = page.length > 12
+    const posts = await decoratePosts(page.slice(0, 12), user)
 
     res.status(200).json({
         message: "Posts fetch successfully",
-        posts: await decoratePosts(viewablePosts, user)
+        posts,
+        nextCursor: hasMore ? posts.at(-1)?._id ?? null : null,
+        hasMore
     })
 }
 

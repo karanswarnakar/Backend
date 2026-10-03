@@ -6,6 +6,152 @@
     color: var(--color-primary);
     font-family: var(--ubuntu);
 
+    &--loading {
+        padding: 0 var(--p-md);
+        box-sizing: border-box;
+    }
+
+    &__back {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        margin: var(--m-md) 0 0 -.55rem;
+        padding: .5rem .65rem;
+        color: var(--color-secondary);
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        font: inherit;
+        font-size: var(--fs-sm);
+        cursor: pointer;
+        transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+
+        svg { width: 1.15rem; height: 1.15rem; }
+
+        &:hover {
+            color: var(--color-primary);
+            background: var(--bg-hover);
+            border-color: var(--border-primary);
+            transform: translateX(-2px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-brand);
+            outline-offset: 2px;
+        }
+    }
+
+    .profile-skeleton {
+            width: 100%;
+            max-width: 900px;
+            margin: var(--m-xl) auto;
+            padding: var(--p-3xl);
+            box-sizing: border-box;
+            color: var(--color-primary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            animation: profile-skeleton-enter 250ms ease-out both;
+
+            &__avatar,
+            &__line,
+            &__actions i,
+            &__stats i,
+            &__tabs i,
+            &__grid i {
+                display: block;
+                background: linear-gradient(100deg, var(--bg-secondary) 30%, var(--bg-hover) 50%, var(--bg-secondary) 70%);
+                background-size: 220% 100%;
+                animation: profile-skeleton-shimmer 1.2s ease-in-out infinite;
+            }
+
+            &__header {
+                display: flex;
+                align-items: flex-start;
+                gap: var(--p-2xl);
+            }
+
+            &__avatar {
+                width: 120px;
+                height: 120px;
+                flex: 0 0 auto;
+                border: 2px solid var(--border-primary);
+                border-radius: 50%;
+            }
+
+            &__details { min-width: 0; flex: 1; padding-top: .25rem; }
+            &__line { height: .75rem; border-radius: var(--radius-full); }
+            &__line--name { width: min(42%, 190px); height: 1.15rem; margin-bottom: .8rem; }
+            &__line--username { width: min(30%, 130px); }
+
+            &__actions {
+                display: flex;
+                gap: var(--p-sm);
+                margin-top: var(--m-lg);
+
+                i { width: 7rem; height: 2.5rem; border-radius: var(--radius-md); }
+                i:last-child { width: 8.5rem; }
+            }
+
+            &__joined { width: 8rem; margin-top: var(--m-xl); }
+
+            &__stats {
+                display: flex;
+                gap: var(--p-2xl);
+                margin: var(--m-xl) 0;
+
+                i { width: 5rem; height: .7rem; border-radius: var(--radius-full); }
+                i:nth-child(2) { width: 6rem; }
+                i:nth-child(3) { width: 6rem; }
+            }
+
+            &__tabs {
+                display: flex;
+                border-top: 1px solid var(--border-primary);
+                border-bottom: 1px solid var(--border-primary);
+
+                i { width: 50%; height: 2.8rem; background-color: var(--bg-card); }
+            }
+
+            &__grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 4px;
+                padding-top: var(--p-md);
+
+                i { aspect-ratio: 1; border-radius: 2px; }
+            }
+    }
+
+    @keyframes profile-skeleton-shimmer {
+        to { background-position: -220% 0; }
+    }
+
+    @keyframes profile-skeleton-enter {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+        .profile-skeleton {
+            padding: var(--p-md);
+
+            &__header { gap: var(--p-md); }
+            &__avatar { width: 76px; height: 76px; }
+            &__actions i { width: 5rem; height: 2.1rem; }
+            &__actions i:last-child { width: 6rem; }
+            &__stats { gap: var(--p-md); }
+            &__stats i { width: 3.5rem; }
+            &__stats i:nth-child(2),
+            &__stats i:nth-child(3) { width: 4.5rem; }
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .profile-skeleton,
+        .profile-skeleton * { animation: none; }
+    }
+
     /* ================= HEADER ================= */
 
     &__header {
@@ -289,61 +435,90 @@
     /* ================= POSTS ================= */
 
     &__posts {
-        width: min(100%, 600px);
-        display: flex;
-        flex-direction: column;
-        gap: var(--m-md);
+        width: min(100%, 900px);
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
         margin: 0 auto;
-        padding: var(--p-md);
+        padding: var(--p-md) var(--p-md) var(--p-2xl);
     }
 
     &__post {
         position: relative;
         aspect-ratio: 1 / 1;
+        display: block;
         overflow: hidden;
-
         background: var(--bg-secondary);
         cursor: pointer;
+        text-decoration: none;
 
         img {
             width: 100%;
             height: 100%;
-
             display: block;
-
             object-fit: cover;
-
-            transition: transform var(--transition-slow);
+            transition: transform var(--transition-normal);
         }
 
-        .follow-requests-dialog {
-            .follow-request {
-                display: flex;
-                align-items: center;
-                gap: .5rem;
-                padding: .75rem 0;
-                border-bottom: 1px solid var(--border-primary);
-
-                span {
-                    flex: 1;
-                }
-
-                button {
-                    padding: .4rem .65rem;
-                    color: var(--color-primary);
-                    background: var(--bg-secondary);
-                    border: 1px solid var(--border-primary);
-                    border-radius: var(--radius-sm);
-                    cursor: pointer;
-                }
-            }
+        &:hover img,
+        &:focus-visible img {
+            transform: scale(1.04);
         }
 
-        &:hover {
-            img {
-                transform: scale(1.05);
-            }
+        &:focus-visible {
+            z-index: 1;
+            outline: 2px solid var(--color-brand);
+            outline-offset: -2px;
         }
+
+        &:hover .profile__post-overlay,
+        &:focus-visible .profile__post-overlay {
+            opacity: 1;
+        }
+
+        &--reshare .profile__reshare-mark {
+            position: absolute;
+            top: .55rem;
+            right: .55rem;
+            width: 2rem;
+            height: 2rem;
+            display: grid;
+            place-items: center;
+            color: var(--color-brand);
+            background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+            border: 1px solid color-mix(in srgb, var(--color-brand) 34%, var(--border-primary));
+            border-radius: 50%;
+            box-shadow: 0 2px 8px var(--shadow-soft);
+
+            svg { width: 1rem; height: 1rem; }
+        }
+    }
+
+    &__post-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(.5rem, 2vw, 1.5rem);
+        color: var(--white);
+        background: #0007;
+        font-size: var(--fs-sm);
+        font-weight: var(--fw-semibold);
+        opacity: 0;
+        transition: opacity var(--transition-fast);
+
+        > span {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+
+            svg { width: 1.1rem; height: 1.1rem; }
+        }
+    }
+
+    &__tab-state {
+        grid-column: 1 / -1;
     }
 
     /* ================= TABLET ================= */
@@ -417,6 +592,11 @@
         &__tab {
             padding: var(--p-md) var(--p-xs);
             font-size: var(--fs-xs);
+        }
+
+        &__posts {
+            gap: 2px;
+            padding: var(--p-xs);
         }
 
         &__stats {

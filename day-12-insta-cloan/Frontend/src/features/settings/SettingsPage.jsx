@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Navbar from "../components/Navbar.jsx";
 import { useAuth } from "../auth/hooks/useAuth.js";
 import { updatePrivacy } from "../profile/services/profile.api.js";
@@ -9,8 +9,17 @@ import "./settings.scss";
 const SettingsPage = () => {
     const { user, setUser } = useAuth();
     const { theme, toggleTheme } = useTheme();
+    const navigate = useNavigate();
     const [savingPrivacy, setSavingPrivacy] = useState(false);
     const [error, setError] = useState("");
+
+    const goBack = () => {
+        if (window.history.state?.idx > 0) {
+            navigate(-1);
+            return;
+        }
+        navigate(`/profile/${encodeURIComponent(user.username)}`);
+    };
 
     const togglePrivacy = async () => {
         if (savingPrivacy) return;
@@ -31,6 +40,12 @@ const SettingsPage = () => {
         <>
             <Navbar />
             <main className="settings-page">
+                <button className="settings-page__back" type="button" onClick={goBack}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="m15 18-6-6 6-6" />
+                    </svg>
+                    <span>Back</span>
+                </button>
                 <header className="settings-page__heading">
                     <span className="settings-page__eyebrow">YOUR ACCOUNT</span>
                     <h1>Settings</h1>

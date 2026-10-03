@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, Navigate, useNavigate } from "react-router"
 import "../style/form.scss"
 import { useAuth } from '../hooks/useAuth'
+import AppLoader from '../../shared/AppLoader.jsx'
 const Login = () => {
 
   const [username, setUsername] = useState("")
@@ -28,11 +29,7 @@ const Login = () => {
   }
 
  if (loading) {
-    return (
-      <main className="auth-page">
-        <h1 className='loading'>loading...</h1>
-      </main>
-    )
+    return <AppLoader />
   }
   return (
     <main className="auth-page">

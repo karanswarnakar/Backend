@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
+import AppLoader from '../../shared/AppLoader.jsx'
 const Register = () => {
 
   const [username, setUsername] = useState("")
@@ -28,9 +29,7 @@ const Register = () => {
   }
 
   if (loading) {
-    return (<main className="auth-page">
-      <h1 className='loading'>Loading.....</h1>
-    </main>)
+    return <AppLoader />
   }
 
   return (

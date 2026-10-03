@@ -209,20 +209,60 @@ const PostDetails = () => {
                                         )}
                                     </article>
                                 ))}
-                                {!comments.length && <p className="post-detail__empty">No comments yet. Start the conversation.</p>}
+                                {!comments.length && (
+                                    <div className="post-detail__empty">
+                                        <span aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                                                <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" />
+                                                <path d="M8 12h8M8 8h5" />
+                                            </svg>
+                                        </span>
+                                        <strong>No comments yet</strong>
+                                        <p>Be the first to share what you think.</p>
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>
                     <div className="post-detail__footer">
                         <div className="post-detail__actions">
-                            <button type="button" aria-label={post.isLiked ? "Unlike post" : "Like post"} disabled={!user} onClick={toggleLike}>
-                                {post.isLiked ? "♥" : "♡"} <span>{post.likes ?? 0}</span>
+                            <button
+                                type="button"
+                                className={post.isLiked ? "is-liked" : ""}
+                                aria-label={post.isLiked ? "Unlike post" : "Like post"}
+                                aria-pressed={Boolean(post.isLiked)}
+                                disabled={!user}
+                                onClick={toggleLike}
+                            >
+                                <svg viewBox="0 0 24 24" fill={post.isLiked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                                    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+                                </svg>
+                                <span>{post.likes ?? 0}</span>
                             </button>
-                            <button type="button" aria-label="Reshare post" disabled={!user} onClick={toggleReshare}>
-                                ↻ <span>{post.reshareCount ?? 0}</span>
+                            <button
+                                type="button"
+                                className={post.isReshared ? "is-reshared" : ""}
+                                aria-label={post.isReshared ? "Undo reshare" : "Reshare post"}
+                                aria-pressed={Boolean(post.isReshared)}
+                                disabled={!user}
+                                onClick={toggleReshare}
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <path d="m17 1 4 4-4 4V6H8a4 4 0 0 0-4 4v1H2v-1a6 6 0 0 1 6-6h9V1ZM7 23l-4-4 4-4v3h9a4 4 0 0 0 4-4v-1h2v1a6 6 0 0 1-6 6H7v3Z" />
+                                </svg>
+                                <span>{post.reshareCount ?? 0}</span>
                             </button>
-                            <button type="button" aria-label={post.isSaved ? "Remove bookmark" : "Save post"} disabled={!user} onClick={toggleSave}>
-                                {post.isSaved ? "▣" : "▢"}
+                            <button
+                                type="button"
+                                className={`post-detail__save${post.isSaved ? " is-saved" : ""}`}
+                                aria-label={post.isSaved ? "Remove bookmark" : "Save post"}
+                                aria-pressed={Boolean(post.isSaved)}
+                                disabled={!user}
+                                onClick={toggleSave}
+                            >
+                                <svg viewBox="0 0 24 24" fill={post.isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
+                                    <path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h9A1.5 1.5 0 0 1 18 3.5V22l-6-4-6 4V3.5Z" />
+                                </svg>
                             </button>
                         </div>
                         {actionError && <p className="post-detail__error" role="alert">{actionError}</p>}

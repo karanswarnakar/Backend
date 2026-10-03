@@ -234,12 +234,26 @@ async function updatePrivacy(req, res) {
     if (typeof req.body?.isPrivate !== "boolean") {
         return res.status(400).json({ message: "isPrivate must be a boolean" })
     }
+    const currentUser = await UserModel.findById(req.user.id).select("isPrivate")
+    if (!currentUser) return res.status(404).json({ message: "User not found" })
+
     const user = await UserModel.findByIdAndUpdate(
         req.user.id,
         { $set: { isPrivate: req.body.isPrivate } },
         { new: true, runValidators: true }
     ).select("_id username isPrivate")
     if (!user) return res.status(404).json({ message: "User not found" })
+
+    if (currentUser.isPrivate !== user.isPrivate) {
+        await createNotification({
+            recipient: user._id,
+            actor: user._id,
+            type: "privacy_update",
+            message: user.isPrivate ? "private" : "public",
+            allowSelf: true
+        })
+    }
+
     return res.status(200).json({ user })
 }
 

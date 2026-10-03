@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Navbar from "../../components/Navbar";
 import { usePost } from "../hooks/usePost";
-import LeftPanel from "../components/LeftPanel";
 import "../style/create-post.scss";
 
 const FILTERS = [
@@ -55,6 +54,14 @@ const CreatePost = () => {
     const [activeFilter, setActiveFilter] = useState(FILTERS[0]);
     const [error, setError] = useState("");
 
+    const goBack = () => {
+        if (window.history.state?.idx > 0) {
+            navigate(-1);
+            return;
+        }
+        navigate("/");
+    };
+
     useEffect(() => {
         if (!file) {
             setPreviewUrl("");
@@ -96,9 +103,14 @@ const CreatePost = () => {
         <>
             <Navbar />
             <main className="contener create-post-layout">
-                <LeftPanel />
                 <section className="create-post">
                     <header className="create-post__heading">
+                        <button className="create-post__back" type="button" onClick={goBack}>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="m15 18-6-6 6-6" />
+                            </svg>
+                            <span>Back</span>
+                        </button>
                         <h1>Create Post</h1>
                     </header>
 

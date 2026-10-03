@@ -6,7 +6,13 @@ async function getNotifications(req, res) {
     if (cursor && !mongoose.isValidObjectId(cursor)) {
         return res.status(400).json({ message: "Invalid notification cursor" });
     }
-    const filter = { recipient: req.user.id };
+    const filter = {
+        recipient: req.user.id,
+        $or: [
+            { actor: { $ne: req.user.id } },
+            { type: "privacy_update" }
+        ]
+    };
     if (cursor) filter._id = { $lt: new mongoose.Types.ObjectId(cursor) };
     const notifications = await NotificationModel.find(filter)
         .populate({ path: "actor", select: "username profileImage" })
@@ -18,6 +24,10 @@ async function getNotifications(req, res) {
     const items = notifications.slice(0, 20);
     const unreadCount = await NotificationModel.countDocuments({
         recipient: req.user.id,
+        $or: [
+            { actor: { $ne: req.user.id } },
+            { type: "privacy_update" }
+        ],
         readAt: null
     });
     return res.status(200).json({

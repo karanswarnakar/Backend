@@ -1,12 +1,11 @@
 .create-post-layout {
-    justify-content: flex-start;
+    justify-content: center;
     overflow-y: auto;
 }
 
 .create-post {
-    width: min(900px, calc(100% - clamp(230px, 24vw, 320px) - 2rem));
+    width: min(900px, calc(100% - 2rem));
     margin: clamp(1.5rem, 5vh, 3rem) auto;
-    margin-left: clamp(230px, 24vw, 320px);
     color: var(--color-primary);
     font-family: var(--ubuntu);
 
@@ -17,6 +16,36 @@
             margin: 0;
             font-size: var(--fs-2xl);
             font-weight: var(--fw-bold);
+        }
+    }
+
+    &__back {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        margin: 0 0 var(--m-md) -.55rem;
+        padding: .5rem .65rem;
+        color: var(--color-secondary);
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        font: inherit;
+        font-size: var(--fs-sm);
+        cursor: pointer;
+        transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+
+        svg { width: 1.15rem; height: 1.15rem; }
+
+        &:hover {
+            color: var(--color-primary);
+            background: var(--bg-hover);
+            border-color: var(--border-primary);
+            transform: translateX(-2px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-brand);
+            outline-offset: 2px;
         }
     }
 

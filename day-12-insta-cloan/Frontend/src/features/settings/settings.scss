@@ -5,6 +5,36 @@
     font-family: var(--ubuntu);
     animation: settings-enter 420ms cubic-bezier(.2, .7, .2, 1) both;
 
+    &__back {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        margin: 0 0 var(--m-lg) -.55rem;
+        padding: .5rem .65rem;
+        color: var(--color-secondary);
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        font: inherit;
+        font-size: var(--fs-sm);
+        cursor: pointer;
+        transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+
+        svg { width: 1.15rem; height: 1.15rem; }
+
+        &:hover {
+            color: var(--color-primary);
+            background: var(--bg-hover);
+            border-color: var(--border-primary);
+            transform: translateX(-2px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-brand);
+            outline-offset: 2px;
+        }
+    }
+
     &__heading {
         margin-bottom: var(--m-2xl);
 

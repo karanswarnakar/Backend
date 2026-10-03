@@ -18,6 +18,7 @@
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-lg);
     font-family: var(--ubuntu);
+    box-shadow: 0 8px 28px var(--shadow-soft);
 }
 
 @media (max-width: 720px) {
@@ -40,10 +41,8 @@
         top: 0;
         z-index: 1;
         padding: var(--p-md);
-        background: var(--bg-primary);
-        border-bottom: 1px solid var(--border-primary);
-
         background: var(--bg-card);
+        border-bottom: 1px solid var(--border-primary);
     }
 
     &__heading {
@@ -51,11 +50,11 @@
         align-items: center;
         justify-content: space-between;
 
-        h1 { margin: 0; font-size: var(--fs-xl); }
+        h1 { margin: 0; font-size: var(--fs-xl); font-weight: var(--fw-semibold); }
 
         span {
-            min-width: 1.6rem;
-            padding: .18rem .4rem;
+            min-width: 1.5rem;
+            padding: .2rem .45rem;
             color: var(--color-brand);
             background: color-mix(in srgb, var(--color-brand) 13%, transparent);
             border-radius: var(--radius-full);
@@ -82,7 +81,7 @@
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 14%, transparent);
     }
 
-    > span { font-size: 1.2rem; line-height: 1; }
+    > svg { width: 1rem; height: 1rem; flex: 0 0 auto; }
 
     input {
         width: 100%;
@@ -105,7 +104,7 @@
     display: flex;
     align-items: center;
     gap: var(--p-sm);
-    padding: var(--p-sm) var(--p-md);
+    padding: .8rem var(--p-md);
     color: inherit;
     background: transparent;
     border: 0;
@@ -117,7 +116,7 @@
     &:hover,
     &.is-active { background: var(--bg-hover); }
 
-    &:hover { transform: translateX(2px); }
+    &:hover { transform: translateX(1px); }
     &.is-active { box-shadow: inset 3px 0 var(--color-brand); }
 
     &__body {
@@ -224,18 +223,18 @@
 .message-bubble {
     max-width: min(78%, 500px);
     align-self: flex-start;
-    padding: .6rem .8rem;
+    padding: .7rem .9rem;
     background: var(--bg-secondary);
-    border-radius: 15px 15px 15px 4px;
+    border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 4px;
     animation: message-arrive 220ms ease-out both;
 
-    p { margin: 0; font-size: var(--fs-sm); line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
-    time { display: block; margin-top: .3rem; color: var(--color-muted); font-size: 10px; }
+    p { margin: 0; font-size: var(--fs-sm); line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+    time { display: block; margin-top: .35rem; color: var(--color-muted); font-size: 10px; text-align: right; }
 
     &.is-mine {
         align-self: flex-end;
         background: var(--color-brand);
-        border-radius: 15px 15px 4px 15px;
+        border-radius: var(--radius-lg) var(--radius-lg) 4px var(--radius-lg);
 
         time { color: #e1e0ff; }
     }
@@ -293,19 +292,38 @@
         font-weight: var(--fw-semibold);
         cursor: pointer;
         transition: transform var(--transition-fast), background var(--transition-fast), opacity var(--transition-fast);
+
+        svg { width: 1rem; height: 1rem; }
+
         &:hover:not(:disabled) { transform: translateY(-1px); }
+        &:hover:not(:disabled) { background: var(--color-brand-hover); }
         &:disabled { opacity: .55; cursor: not-allowed; }
     }
 
 }
 
 .messages-welcome {
+    max-width: 360px;
     margin: auto;
     padding: var(--p-2xl);
     text-align: center;
-    span { color: var(--color-brand); font-size: var(--fs-4xl); }
-    h2 { margin: var(--m-xs) 0; font-size: var(--fs-xl); }
-    p { color: var(--color-secondary); font-size: var(--fs-sm); line-height: 1.5; }
+
+    &__icon {
+        width: 3.6rem;
+        height: 3.6rem;
+        display: grid;
+        place-items: center;
+        margin: 0 auto var(--m-md);
+        color: var(--color-brand);
+        background: color-mix(in srgb, var(--color-brand) 12%, var(--bg-card));
+        border: 1px solid color-mix(in srgb, var(--color-brand) 24%, var(--border-primary));
+        border-radius: 50%;
+
+        svg { width: 1.7rem; height: 1.7rem; }
+    }
+
+    h2 { margin: var(--m-xs) 0; font-size: var(--fs-xl); font-weight: var(--fw-semibold); }
+    p { color: var(--color-secondary); font-size: var(--fs-sm); line-height: 1.6; }
 }
 
 .messages-empty {

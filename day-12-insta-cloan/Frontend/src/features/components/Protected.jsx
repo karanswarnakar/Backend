@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router'
 import { useAuth } from '../auth/hooks/useAuth'
+import AppLoader from '../shared/AppLoader.jsx'
 
 const Protected = ({ children }) => {
 
@@ -7,11 +8,7 @@ const Protected = ({ children }) => {
     const { pathname } = useLocation()
 
     if (loading) {
-        return (
-            <main className='h-screen bg-gray-50 flex justify-center items-center'>
-                <h1>Loading...</h1>
-            </main>
-        )
+        return <AppLoader />
     }
 
     if (!user) {
