@@ -1,66 +1,36 @@
-
 .navbar {
-   
     width: 100%;
     height: 8vh;
-
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-primary);
-
     z-index: 1000;
     font-family: var(--ubuntu);
-
 
     &__inner {
         width: 100%;
         height: 100%;
-
         display: flex;
         align-items: center;
-
         padding: 0 28px;
         gap: 24px;
+        box-sizing: border-box;
     }
 
-  
     &__brand {
         display: flex;
         align-items: center;
         gap: 9px;
-
         flex-shrink: 0;
         cursor: pointer;
     }
 
-    &__brand-logo {
-        width: 34px;
-        height: 34px;
-
-        display: grid;
-        place-items: center;
-
-        background: var(--color-brand);
-        color: var(--white);
-
-        border-radius: 9px;
-
-        font-size: 17px;
-        font-weight: var(--fw-bold);
-    }
-
     &__brand-name {
         color: var(--color-primary);
-
         font-size: var(--fs-2xl);
         font-weight: var(--fw-bold);
         letter-spacing: -0.3px;
-
-        span {
-            color: var(--color-brand);
-        }
     }
 
-  
     &__search {
         width: 100%;
         max-width: 400px;
@@ -84,7 +54,6 @@
         svg {
             width: 17px;
             height: 17px;
-
             flex-shrink: 0;
             color: var(--color-muted);
         }
@@ -96,7 +65,6 @@
 
         input {
             width: 100%;
-
             background: transparent;
             border: none;
             outline: none;
@@ -112,24 +80,21 @@
         }
     }
 
-
     &__actions {
         display: flex;
         align-items: center;
         gap: 12px;
-
         flex-shrink: 0;
     }
 
- 
     &__create {
         height: 38px;
 
         display: flex;
         align-items: center;
         justify-content: center;
-
         gap: 6px;
+
         padding: 0 14px;
 
         background: var(--color-brand);
@@ -148,7 +113,7 @@
             background 0.2s ease,
             transform 0.15s ease;
 
-        span:first-child {
+        span {
             font-size: 19px;
             line-height: 1;
         }
@@ -162,7 +127,12 @@
         }
     }
 
- 
+    /* Profile wrapper */
+    &__profile-wrapper {
+        position: relative;
+    }
+
+    /* Profile button */
     &__profile {
         width: 38px;
         height: 38px;
@@ -182,7 +152,6 @@
         img {
             width: 100%;
             height: 100%;
-
             display: block;
             object-fit: cover;
         }
@@ -192,6 +161,104 @@
         }
     }
 
+    /* Profile dropdown */
+    &__menu {
+        position: absolute;
+
+        top: calc(100% + 10px);
+        right: 0;
+
+        width: 190px;
+
+        padding: 7px;
+
+        background: var(--bg-primary);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+        z-index: 2000;
+
+        animation: profileMenuIn 0.15s ease-out;
+
+        a,
+        button {
+            width: 100%;
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 0 11px;
+
+            box-sizing: border-box;
+
+            border: none;
+            border-radius: 8px;
+
+            background: transparent;
+
+            color: var(--color-primary);
+
+            font-family: var(--ubuntu);
+            font-size: var(--fs-sm);
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition:
+                background 0.15s ease,
+                color 0.15s ease;
+
+            &:hover {
+                background: var(--bg-secondary);
+                color: var(--color-brand);
+            }
+
+            span {
+                width: 20px;
+                text-align: center;
+            }
+        }
+    }
+
+    &__menu-divider {
+        height: 1px;
+
+        margin: 6px 4px;
+
+        background: var(--border-primary);
+    }
+
+    &__logout {
+        color: #e74c3c !important;
+
+        &:hover {
+            background: rgba(231, 76, 60, 0.08) !important;
+            color: #e74c3c !important;
+        }
+    }
+
+    a {
+        text-decoration: none;
+        color: var(--white);
+    }
+
+    @keyframes profileMenuIn {
+        from {
+            opacity: 0;
+            transform: translateY(-5px) scale(0.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
 
     @media (max-width: 700px) {
         &__inner {
@@ -207,7 +274,6 @@
             max-width: none;
         }
     }
-
 
     @media (max-width: 480px) {
         &__inner {

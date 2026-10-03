@@ -79,7 +79,7 @@ const RightPanel = () => {
         </div>
           </li>
         </ul>
-        <Link to={"/create-post"}>More</Link>
+        <Link to={"/network"}>More</Link>
       </div>
 
       

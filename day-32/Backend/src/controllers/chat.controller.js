@@ -90,7 +90,10 @@ export async function deleteChat(req, res) {
     const chat = await ChatModel.findOne({
         _id: chatId,
         user: userId
+
     })
+    // console.log(chat);
+
     if (!chat) {
         return res.status(401).json({
             message: "You are not authorized to access this chat"
@@ -113,17 +116,18 @@ export async function deleteChat(req, res) {
 
 export async function deleteMessages(req, res) {
     const { msgId } = req.params
+    console.log(msgId);
 
     const message = await MessageModel.findOne({
         _id: msgId
     })
-
+    // console.log(message)
     const chat = await ChatModel.findOne({
         _id: message.chat
     })
-
+    // console.log(chat)
     const isUserCreatedChat = chat.user.equals(req.user.id)
-    
+    console.log(isUserCreatedChat)
     if (!isUserCreatedChat) {
         return res.status(401).json({
             message: "You are not authorized to access this chat"
@@ -133,6 +137,7 @@ export async function deleteMessages(req, res) {
     const deleteMessage = await MessageModel.findByIdAndDelete({
         _id: message._id
     })
+    // console.log(deleteMessage)
     return res.status(200).json({
         message: "Message deleted successfully"
     })

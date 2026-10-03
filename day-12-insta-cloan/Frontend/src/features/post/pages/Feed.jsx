@@ -55,7 +55,10 @@ const Feed = () => {
 
             <main className="contener">
 
-                <LeftPanel />
+                <LeftPanel
+                   handleGetProfileByUsername={handleGetProfileByUsername}
+                   
+                   />
 
                 <section className="feed-contener">
                     <div className="posts">

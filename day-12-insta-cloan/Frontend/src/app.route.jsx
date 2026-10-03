@@ -5,6 +5,7 @@ import Feed from "./features/post/pages/Feed.jsx";
 import CreatePost from "./features/post/pages/CreatePost.jsx";
 import ProfilePage from "./features/profile/pages/ProfilePage.jsx";
 import EditProfile from "./features/profile/pages/EditProfile.jsx";
+import PageNotFound from "./features/components/PageNotFound.jsx";
 
 
 export const router = createBrowserRouter([
@@ -31,5 +32,9 @@ export const router = createBrowserRouter([
     {
         path: "/profile/edit",
         element: <EditProfile/>
+    },
+    {
+        path: "/*",
+        element: <PageNotFound/>
     }
 ])

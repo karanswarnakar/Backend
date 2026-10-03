@@ -11,3 +11,9 @@ export async function getUserByUsername({username}) {
 
     return response.data
 }
+export async function getPostOfUser() {
+    
+    const response = await api.get()
+    console.log(response);
+    return response.data
+}

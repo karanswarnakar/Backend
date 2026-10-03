@@ -1,14 +1,38 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 import "./navbar.scss";
 
 const Navbar = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const menuRef = useRef(null);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target)
+            ) {
+                setIsMenuOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener(
+                "mousedown",
+                handleClickOutside
+            );
+        };
+    }, []);
+
     return (
         <header className="navbar">
             <div className="navbar__inner">
 
                 {/* Brand */}
                 <div className="navbar__brand">
-
                     <span className="navbar__brand-name">
                         Socially
                     </span>
@@ -34,21 +58,81 @@ const Navbar = () => {
 
                 {/* Actions */}
                 <div className="navbar__actions">
-                    <button className="navbar__create">
+
+                    {/* Create */}
+                    <Link
+                        className="navbar__create"
+                        to="/create-post"
+                    >
                         <span>+</span>
                         <span className="navbar__create-text">
                             Create
                         </span>
-                    </button>
+                    </Link>
 
-                    <button className="navbar__profile">
-                        <img
-                            src="https://i.pravatar.cc/100?img=12"
-                            alt="Profile"
-                        />
-                    </button>
+                    {/* Profile */}
+                    <div
+                        className="navbar__profile-wrapper"
+                        ref={menuRef}
+                    >
+                        <button
+                            type="button"
+                            className="navbar__profile"
+                            onClick={() =>
+                                setIsMenuOpen((prev) => !prev)
+                            }
+                        >
+                            <img
+                                src="https://i.pravatar.cc/100?img=12"
+                                alt="Profile"
+                            />
+                        </button>
+
+                        {/* Settings Menu */}
+                        {isMenuOpen && (
+                            <div className="navbar__menu">
+
+                                <Link
+                                    to="/profile"
+                                    onClick={() =>
+                                        setIsMenuOpen(false)
+                                    }
+                                >
+                                    <span>👤</span>
+                                    Profile
+                                </Link>
+
+                                <Link
+                                    to="/settings"
+                                    onClick={() =>
+                                        setIsMenuOpen(false)
+                                    }
+                                >
+                                    <span>⚙️</span>
+                                    Settings
+                                </Link>
+
+                               
+
+                                <div className="navbar__menu-divider" />
+
+                                <button
+                                    type="button"
+                                    className="navbar__logout"
+                                    onClick={() => {
+                                        console.log("Logout");
+                                        setIsMenuOpen(false);
+                                    }}
+                                >
+                                    <span>↪</span>
+                                    Logout
+                                </button>
+
+                            </div>
+                        )}
+                    </div>
+
                 </div>
-
             </div>
         </header>
     );
