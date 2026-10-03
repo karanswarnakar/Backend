@@ -1,12 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import "./navbar.scss";
+import { useAuth } from "../auth/hooks/useAuth";
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef(null);
+    const {logoutHandle} = useAuth()
+   
 
-    // Close menu when clicking outside
+    const logoutUser = async () => {
+        await logoutHandle()
+
+        setIsMenuOpen(false);
+
+    }
+
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
@@ -119,10 +129,7 @@ const Navbar = () => {
                                 <button
                                     type="button"
                                     className="navbar__logout"
-                                    onClick={() => {
-                                        console.log("Logout");
-                                        setIsMenuOpen(false);
-                                    }}
+                                    onClick={ logoutHandle}
                                 >
                                     <span>↪</span>
                                     Logout

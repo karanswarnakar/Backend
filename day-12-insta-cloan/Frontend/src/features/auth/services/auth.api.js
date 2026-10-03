@@ -20,7 +20,12 @@ export async function register(username, email, password) {
     return res.data
 }
 export async function getMe(username, password) {
-    const res = await api.post("/get-me")
+    const res = await api.get("/get-me")
+
+    return res.data
+}
+export async function logout() {
+    const res = await api.get("/logout")
 
     return res.data
 }

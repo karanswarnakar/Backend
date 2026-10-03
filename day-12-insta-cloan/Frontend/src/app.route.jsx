@@ -6,6 +6,7 @@ import CreatePost from "./features/post/pages/CreatePost.jsx";
 import ProfilePage from "./features/profile/pages/ProfilePage.jsx";
 import EditProfile from "./features/profile/pages/EditProfile.jsx";
 import PageNotFound from "./features/components/PageNotFound.jsx";
+import Protected from "./features/components/Protected.jsx";
 
 
 export const router = createBrowserRouter([
@@ -19,19 +20,19 @@ export const router = createBrowserRouter([
     },
     {
         path: "/",
-        element: <Feed />
+        element: <Protected><Feed /></Protected>
     },
     {
         path: "/create-post",
-        element: <CreatePost/>
+        element: <Protected><CreatePost/></Protected>
     },
     {
         path: "/profile",
-        element: <ProfilePage/>
+        element: <Protected><ProfilePage/></Protected>
     },
     {
         path: "/profile/edit",
-        element: <EditProfile/>
+        element: <Protected><EditProfile/></Protected>
     },
     {
         path: "/*",

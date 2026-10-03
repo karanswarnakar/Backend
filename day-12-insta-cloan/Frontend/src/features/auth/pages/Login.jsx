@@ -12,12 +12,16 @@ const Login = () => {
   const { user, loading, handelLogin } = useAuth()
 
  
+  if(user && !loading){
+    return navigate("/")
+  }
 
   const submitHandler = async (e) => {
     e.preventDefault()
     await handelLogin(username, password)
-
-    navigate("/")
+    .then(()=>{
+      navigate("/")
+    })
   }
  if (loading) {
     return (

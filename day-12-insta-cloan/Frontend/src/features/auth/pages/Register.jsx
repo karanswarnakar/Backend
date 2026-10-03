@@ -10,7 +10,9 @@ const Register = () => {
   const navigate = useNavigate()
 
   const { user, loading, handelRegister } = useAuth()
-
+  if (user && !loading) {
+    return navigate("/")
+  }
 
   const submitHandler = async (e) => {
     e.preventDefault()

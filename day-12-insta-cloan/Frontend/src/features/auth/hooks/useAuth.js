@@ -1,11 +1,22 @@
 import { useContext } from "react"
 import { AuthContext } from "../auth.context.jsx"
-import { login, register, getMe } from '../services/auth.api.js'
+import { login, register, logout } from '../services/auth.api.js'
 
 export const useAuth = () => {
     const context = useContext(AuthContext)
     const { user, setUser, loading, setLoading } = context
+  const handelRegister = async (username, email, password) => {
+        setLoading(true)
+        try {
+            const res = await register(username, email, password)
+            setUser(res.user)
+        } catch (err) {
+            console.log(err);
 
+        } finally {
+            setLoading(false)
+        }
+    }
     const handelLogin = async (username, password) => {
         setLoading(true)
         try {
@@ -18,10 +29,10 @@ export const useAuth = () => {
             setLoading(false)
         }
     }
-    const handelRegister = async (username, email, password) => {
+    const logoutHandle = async () => {
         setLoading(true)
         try {
-            const res = await register(username, email, password)
+            const res = await logout()
             setUser(res.user)
         } catch (err) {
             console.log(err);
@@ -30,12 +41,14 @@ export const useAuth = () => {
             setLoading(false)
         }
     }
+  
 
     return {
         user,
         loading,
         handelLogin,
-        handelRegister
+        handelRegister,
+        logoutHandle
     }
 
 }
